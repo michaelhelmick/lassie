@@ -54,7 +54,7 @@ class Lassie(object):
     def __init__(self, parser='html5lib'):
         self.parser = parser
 
-    def fetch(self, url=None, open_graph=True, twitter=True, touch_icon=True, favicon=True, all_images=False):
+    def fetch(self, url, open_graph=True, twitter=True, touch_icon=True, favicon=True, all_images=False):
         """
         {
             'url': 'http://google.com',
