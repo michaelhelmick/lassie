@@ -30,3 +30,10 @@ class LassieTestCase(unittest.TestCase):
         self.assertEqual(image['width'], 550)
         self.assertEqual(image['height'], 365)
         self.assertEqual(image['type'], 'og:image')
+
+        self.assertEqual(len(data['videos']), 1)
+        video = data['videos'][0]
+        self.assertEqual(video['src'], 'http://www.youtube.com/v/dQw4w9WgXcQ?version=3&autohide=1')
+        self.assertEqual(video['width'], 640)
+        self.assertEqual(video['height'], 480)
+        self.assertEqual(video['type'], 'application/x-shockwave-flash')
