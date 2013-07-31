@@ -9,6 +9,7 @@ This module contains the set of helper functions executed by Lassie methods.
 """
 
 import re
+from urlparse import urljoin
 
 CLEANER = re.compile(r'[\r\n\t]')
 
@@ -17,3 +18,6 @@ def strip_tags(value):
 
 def clean_text(value):
     return CLEANER.sub('', value)
+
+def full_url(url, base):
+    return urljoin(base, url)
