@@ -39,7 +39,7 @@ OG_META_TAGS = {
 
 TWITTER_META_TAGS = {
     'twitter:url': 'url',
-    'twitter:site_name': 'title',
+    'twitter:title': 'title',
     'twitter:description': 'description',
     'twitter:locale': 'locale',
     'twitter:image': 'image'
