@@ -19,6 +19,9 @@ import re
 OG_META_PATTERN = re.compile(r"^og:(?!image)", re.I)
 OG_IMAGE_META_PATTERN = re.compile(r"^og:image", re.I)
 
+TWITTER_META_PATTERN = re.compile(r"^twitter:(?!image)", re.I)
+TWITTER_IMAGE_META_PATTERN = re.compile(r"^twitter:image", re.I)
+
 GENERIC_META_PATTERN = re.compile(r"^(description|keywords)", re.I)
 APPLE_TOUCH_ICON_PATTERN = re.compile(r"^(apple-touch-icon|apple-touch-icon-precomposed)", re.I)
 
@@ -34,6 +37,14 @@ OG_META_TAGS = {
     }
 }
 
+TWITTER_META_TAGS = {
+    'twitter:url': 'url',
+    'twitter:site_name': 'title',
+    'twitter:description': 'description',
+    'twitter:locale': 'locale',
+    'twitter:image': 'image'
+}
+
 GENERIC_META_TAGS = {
     'description': 'description',
     'keywords': 'keywords',
@@ -43,7 +54,7 @@ class Lassie(object):
     def __init__(self, parser='html5lib'):
         self.parser = parser
 
-    def fetch(self, url=None, open_graph=True, touch_icon=True, favicon=True, all_images=False):
+    def fetch(self, url=None, open_graph=True, twitter=True, touch_icon=True, favicon=True, all_images=False):
         """
         {
             'url': 'http://google.com',
@@ -71,6 +82,9 @@ class Lassie(object):
 
         if open_graph:
             data.update(self._get_open_graph_data(soup, data))
+
+        if twitter:
+            data.update(self._get_twitter_data(soup, data))
 
         data.update(self._get_generic_data(soup, data, url))
 
@@ -132,6 +146,26 @@ class Lassie(object):
         if image:
             image['type'] = 'og:image'
             data['images'].append(image)
+
+        return data
+
+    def _get_twitter_data(self, soup, data):
+        twitter_data = soup.find_all('meta', {'name': TWITTER_META_PATTERN})
+        twitter_image = soup.find_all('meta', {'name': TWITTER_IMAGE_META_PATTERN})
+
+        for line in twitter_data:
+            key = line.get('name')
+            value = line.get('content')
+
+            for twitter_tag in TWITTER_META_TAGS:
+                if key == twitter_tag:
+                    data[TWITTER_META_TAGS[twitter_tag]] = value
+
+        for line in twitter_image:
+            data['images'].append({
+                'src': line.get('content'),
+                'type':'twitter:image'
+            })
 
         return data
 
