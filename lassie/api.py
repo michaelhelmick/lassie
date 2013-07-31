@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 import requests
 
 from .exceptions import LassieException
-from .helpers import strip_tags, clean_text
+from .helpers import strip_tags, clean_text, full_url
 
 import re
 
@@ -20,6 +20,7 @@ OG_META_PATTERN = re.compile(r"^og:(?!image)", re.I)
 OG_IMAGE_META_PATTERN = re.compile(r"^og:image", re.I)
 
 GENERIC_META_PATTERN = re.compile(r"^(description|keywords)", re.I)
+APPLE_TOUCH_ICON_PATTERN = re.compile(r"^(apple-touch-icon|apple-touch-icon-precomposed)", re.I)
 
 OG_META_TAGS = {
     'og:url': 'url',
@@ -42,7 +43,7 @@ class Lassie(object):
     def __init__(self, parser='html5lib'):
         self.parser = parser
 
-    def fetch(self, url, open_graph=True, all_images=False):
+    def fetch(self, url=None, open_graph=True, touch_icon=True, favicon=True, all_images=False):
         """
         {
             'url': 'http://google.com',
@@ -71,14 +72,20 @@ class Lassie(object):
         if open_graph:
             data.update(self._get_open_graph_data(soup, data))
 
-        data.update(self._get_generic_data(soup, data))
+        data.update(self._get_generic_data(soup, data, url))
+
+        if touch_icon:
+            data.update(self._get_touch_icon(soup, data, url))
+
+        if favicon:
+            data.update(self._get_favicon(soup, data, url))
 
         if all_images:
             body_images = soup.findAll('img')
             for image in body_images:
                 data['images'].append({
                     'src': image.get('src'),
-                    'alt': image.get('alt'),
+                    'alt': image.get('alt', ''),
                     'type': 'body_image',
                     'width': int(image.get('width', 0)),
                     'height': int(image.get('height', 0)),
@@ -128,7 +135,7 @@ class Lassie(object):
 
         return data
 
-    def _get_generic_data(self, soup, data):
+    def _get_generic_data(self, soup, data, url):
         generic_data = soup.find_all('meta', {'name': GENERIC_META_PATTERN})
 
         for line in generic_data:
@@ -142,5 +149,31 @@ class Lassie(object):
                         value = value.split(',')
 
                     data[general_key] = value
+
+        if not 'url' in data:
+            data['url'] = url
+
+        if not 'title' in data:
+            data['title'] = soup.find('title').string
+
+        return data
+
+    def _get_touch_icon(self, soup, data, url):
+        touch_icon_data = soup.find_all('link',{'rel': APPLE_TOUCH_ICON_PATTERN})
+        for touch_icon in touch_icon_data:
+            data['images'].append({
+                'src': full_url(touch_icon.get('href'), url),
+                'type': 'touch_icon'
+            })
+
+        return data
+
+    def _get_favicon(self, soup, data, url):
+        favicon_data = soup.find_all('link',{'rel': 'icon'})
+        for favicon in favicon_data:
+            data['images'].append({
+                'src': full_url(favicon.get('href'), url),
+                'type': 'favicon'
+            })
 
         return data
