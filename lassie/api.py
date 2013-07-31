@@ -42,7 +42,7 @@ class Lassie(object):
     def __init__(self, parser='html5lib'):
         self.parser = parser
 
-    def fetch(self, url=None, content=None, open_graph=True, all_images=False):
+    def fetch(self, url, open_graph=True, all_images=False):
         """
         {
             'url': 'http://google.com',
@@ -60,15 +60,7 @@ class Lassie(object):
         }
         """
 
-        if not content:
-            try:
-                response = requests.get(url)
-            except requests.exceptions.RequestException as e:
-                raise LassieException(e)
-            else:
-                html = clean_text(response.text)
-        else:
-            html = clean_text(content.read())
+        html = self._retreive_content(url)
 
         soup = BeautifulSoup(html, self.parser)
 
@@ -94,6 +86,16 @@ class Lassie(object):
 
         return data
 
+    def _retreive_content(self, url):
+        try:
+            response = requests.get(url)
+        except requests.exceptions.RequestException as e:
+            raise LassieException(e)
+        else:
+            html = clean_text(response.text)
+
+        return html
+
     def _get_open_graph_data(self, soup, data):
         open_graph_data = soup.find_all('meta', {'property': OG_META_PATTERN})
         open_graph_image = soup.find_all('meta', {'property': OG_IMAGE_META_PATTERN})
@@ -113,6 +115,11 @@ class Lassie(object):
 
             for og_image_tag in OG_META_TAGS['og:image']:
                 if key == og_image_tag:
+                    if og_image_tag == 'og:image:width' or og_image_tag == 'og:image:height':
+                        try:
+                            value = int(value)
+                        except ValueError:
+                            value = 0
                     image[OG_META_TAGS['og:image'][og_image_tag]] = value
 
         if image:
