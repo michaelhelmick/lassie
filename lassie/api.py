@@ -21,8 +21,9 @@ OG_META_PATTERN = re.compile(r"^og:", re.I)
 OG_IMAGE_PROPERTY = 'og:image'
 OG_VIDEO_PROPERTY = 'og:video'
 
-TWITTER_META_PATTERN = re.compile(r"^twitter:(?!image)", re.I)
-TWITTER_IMAGE_META_PATTERN = re.compile(r"^twitter:image", re.I)
+TWITTER_CARD_META_PATTERN = re.compile(r"^twitter:", re.I)
+TWITTER_CARD_IMAGE_PROPERTY = 'twitter:image'
+TWITTER_CARD_VIDEO_PROPERTY = 'twitter:player'
 
 GENERIC_META_PATTERN = re.compile(r"^(description|keywords)", re.I)
 APPLE_TOUCH_ICON_PATTERN = re.compile(r"^(apple-touch-icon|apple-touch-icon-precomposed)", re.I)
@@ -43,12 +44,20 @@ OG_META_TAGS = {
     'og:video:type': 'type',
 }
 
-TWITTER_META_TAGS = {
+TWITTER_CARD_META_TAGS = {
     'twitter:url': 'url',
     'twitter:title': 'title',
     'twitter:description': 'description',
     'twitter:locale': 'locale',
-    'twitter:image': 'image'
+
+    'twitter:image': 'src',
+    'twitter:image:width': 'width',
+    'twitter:image:height': 'height',
+
+    'twitter:player': 'src',
+    'twitter:player:width': 'width',
+    'twitter:player:height': 'height',
+    'twitter:player:content_type': 'type',
 }
 
 GENERIC_META_TAGS = {
@@ -158,22 +167,32 @@ class Lassie(object):
         return data
 
     def _get_twitter_data(self, soup, data):
-        twitter_data = soup.find_all('meta', {'name': TWITTER_META_PATTERN})
-        twitter_image = soup.find_all('meta', {'name': TWITTER_IMAGE_META_PATTERN})
+        twitter_card_data = soup.find_all('meta', {'name': TWITTER_CARD_META_PATTERN})
 
-        for line in twitter_data:
-            key = line.get('name')
+        image = {}
+        video = {}
+
+        for line in twitter_card_data:
+            prop = line.get('name')
             value = line.get('content')
 
-            for twitter_tag in TWITTER_META_TAGS:
-                if key == twitter_tag:
-                    data[TWITTER_META_TAGS[twitter_tag]] = value
+            if prop in TWITTER_CARD_META_TAGS:
+                if prop.startswith((TWITTER_CARD_IMAGE_PROPERTY, TWITTER_CARD_VIDEO_PROPERTY)) and prop.endswith(('width', 'height')):
+                    try:
+                        value = int(value)
+                    except ValueError:
+                        value = 0
 
-        for line in twitter_image:
-            data['images'].append({
-                'src': line.get('content'),
-                'type':'twitter:image'
-            })
+                if prop.startswith(TWITTER_CARD_IMAGE_PROPERTY):
+                    image[TWITTER_CARD_META_TAGS[prop]] = value
+                elif prop.startswith(TWITTER_CARD_VIDEO_PROPERTY):
+                    video[TWITTER_CARD_META_TAGS[prop]] = value
+                elif prop == prop:
+                    data[TWITTER_CARD_META_TAGS[prop]] = value
+
+        if image:
+            image['type'] = TWITTER_CARD_IMAGE_PROPERTY
+            data['images'].append(image)
 
         return data
 
