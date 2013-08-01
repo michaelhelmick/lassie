@@ -18,6 +18,3 @@ def strip_tags(value):
 
 def clean_text(value):
     return CLEANER.sub('', value)
-
-def full_url(url, base):
-    return urljoin(base, url)

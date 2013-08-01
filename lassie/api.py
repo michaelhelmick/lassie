@@ -11,14 +11,15 @@ This module contains core Lassie classes and methods.
 from bs4 import BeautifulSoup
 import requests
 
+from .compat import urljoin
 from .exceptions import LassieException
-from .helpers import strip_tags, clean_text, full_url
+from .helpers import strip_tags, clean_text
 
 import re
 
-OG_META_PATTERN = re.compile(r"^og:(?!image|video)", re.I)
-OG_IMAGE_META_PATTERN = re.compile(r"^og:image", re.I)
-OG_VIDEO_META_PATTERN = re.compile(r"^og:video", re.I)
+OG_META_PATTERN = re.compile(r"^og:", re.I)
+OG_IMAGE_PROPERTY = 'og:image'
+OG_VIDEO_PROPERTY = 'og:video'
 
 TWITTER_META_PATTERN = re.compile(r"^twitter:(?!image)", re.I)
 TWITTER_IMAGE_META_PATTERN = re.compile(r"^twitter:image", re.I)
@@ -31,17 +32,15 @@ OG_META_TAGS = {
     'og:site_name': 'title',
     'og:description': 'description',
     'og:locale': 'locale',
-    'og:image': {
-        'og:image': 'src',
-        'og:image:width': 'width',
-        'og:image:height': 'height',
-    },
-    'og:video': {
-        'og:video': 'src',
-        'og:video:width': 'width',
-        'og:video:height': 'height',
-        'og:video:type': 'type',
-    }
+
+    'og:image': 'src',
+    'og:image:width': 'width',
+    'og:image:height': 'height',
+
+    'og:video': 'src',
+    'og:video:width': 'width',
+    'og:video:height': 'height',
+    'og:video:type': 'type',
 }
 
 TWITTER_META_TAGS = {
@@ -80,8 +79,10 @@ class Lassie(object):
         """
 
         html = self._retreive_content(url)
+        if not html:
+            raise LassieException('There was no content to parse.')
 
-        soup = BeautifulSoup(html, self.parser)
+        soup = BeautifulSoup(clean_text(html), self.parser)
 
         data = {
             'images': [],
@@ -121,55 +122,36 @@ class Lassie(object):
         except requests.exceptions.RequestException as e:
             raise LassieException(e)
         else:
-            html = clean_text(response.text)
+            return response.text
 
-        return html
+        return ''
 
     def _get_open_graph_data(self, soup, data):
         open_graph_data = soup.find_all('meta', {'property': OG_META_PATTERN})
-        open_graph_image = soup.find_all('meta', {'property': OG_IMAGE_META_PATTERN})
-        open_graph_video = soup.find_all('meta', {'property': OG_VIDEO_META_PATTERN})
-
-        for line in open_graph_data:
-            key = line.get('property')
-            value = line.get('content')
-
-            for prop in OG_META_TAGS:
-                if key == prop:
-                    data[OG_META_TAGS[prop]] = value
 
         image = {}
-        for line in open_graph_image:
-            key = line.get('property')
-            value = line.get('content')
-
-            for prop in OG_META_TAGS['og:image']:
-                if key == prop:
-                    if prop == 'og:image:width' or prop == 'og:image:height':
-                        try:
-                            value = int(value)
-                        except ValueError:
-                            value = 0
-                    image[OG_META_TAGS['og:image'][prop]] = value
-
-        if image:
-            image['type'] = 'og:image'
-            data['images'].append(image)
-
         video = {}
-        for line in open_graph_video:
-            key = line.get('property')
+
+        for line in open_graph_data:
+            prop = line.get('property')
             value = line.get('content')
 
-            for prop in OG_META_TAGS['og:video']:
-                if key == prop:
-                    if prop == 'og:video:width' or prop == 'og:video:height':
-                        try:
-                            value = int(value)
-                        except ValueError:
-                            value = 0
-                    video[OG_META_TAGS['og:video'][prop]] = value
+            if prop in OG_META_TAGS:
+                if prop.startswith((OG_IMAGE_PROPERTY, OG_VIDEO_PROPERTY)) and prop.endswith(('width', 'height')):
+                    try:
+                        value = int(value)
+                    except ValueError:
+                        value = 0
 
+                if prop.startswith(OG_IMAGE_PROPERTY):
+                    image[OG_META_TAGS[prop]] = value
+                elif prop.startswith(OG_VIDEO_PROPERTY):
+                    video[OG_META_TAGS[prop]] = value
+                elif prop == prop:
+                    data[OG_META_TAGS[prop]] = value
+        if image:
+            image['type'] = OG_IMAGE_PROPERTY
+            data['images'].append(image)
         if video:
             data['videos'].append(video)
 
@@ -222,7 +204,7 @@ class Lassie(object):
         touch_icon_data = soup.find_all('link', {'rel': APPLE_TOUCH_ICON_PATTERN})
         for touch_icon in touch_icon_data:
             data['images'].append({
-                'src': full_url(touch_icon.get('href'), url),
+                'src': urljoin(url, touch_icon.get('href')),
                 'type': 'touch_icon'
             })
 
@@ -232,7 +214,7 @@ class Lassie(object):
         favicon_data = soup.find_all('link', {'rel': 'icon'})
         for favicon in favicon_data:
             data['images'].append({
-                'src': full_url(favicon.get('href'), url),
+                'src': urljoin(url, favicon.get('href')),
                 'type': 'favicon'
             })
 
