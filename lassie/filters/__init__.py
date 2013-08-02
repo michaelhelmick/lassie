@@ -7,15 +7,17 @@
 #      \/_____/   \/_/\/_/   \/_____/   \/_____/   \/_/   \/_____/
 
 """
-Lassie
-------
+lassie.filters
+~~~~~~~~~~~~~~
 
-Lassie is a Python library for retrieving basic content from websites.
+This package contains various filters for parsing content.
 
 """
 
-__version__ = '0.1.0'
+import re
 
-from .api import fetch
-from .core import Lassie
-from .exceptions import LassieException
+from .generic import GENERIC_MAPS
+from .social import SOCIAL_MAPS
+
+APPLE_TOUCH_ICON_PATTERN = re.compile(r"^(apple-touch-icon|apple-touch-icon-precomposed)", re.I)
+FILTER_MAPS = dict(GENERIC_MAPS.items() + SOCIAL_MAPS.items())
