@@ -19,7 +19,7 @@ setup(
     name='lassie',
     version=__version__,
     install_requires=['requests==1.2.3', 'beautifulsoup4==4.2.1'],
-    author='',
+    author='Mike Helmick',
     author_email='mikehelmick@me.com',
     license=open('LICENSE').read(),
     url='https://github.com/michaelhelmick/lassie/tree/master',
