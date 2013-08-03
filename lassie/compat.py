@@ -19,6 +19,6 @@ is_py2 = (_ver[0] == 2)
 is_py3 = (_ver[0] == 3)
 
 if is_py2:
-    from urlparse import urljoin
+    from urlparse import urljoin, urlparse
 elif is_py3:
-    from urllib.parse import urljoin
+    from urllib.parse import urljoin, urlparse

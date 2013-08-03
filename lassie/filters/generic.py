@@ -13,10 +13,11 @@ import re
 GENERIC_MAPS = {
     'meta': {
         'generic': {
-            'pattern': re.compile(r"^(description|keywords)", re.I),
+            'pattern': re.compile(r"^(description|keywords|title)", re.I),
             'map': {
                 'description': 'description',
                 'keywords': 'keywords',
+                'title': 'title',
             },
             'image_key': '',
             'video_key': '',

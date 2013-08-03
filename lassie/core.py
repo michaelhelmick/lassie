@@ -40,13 +40,13 @@ class Lassie(object):
         self.touch_icon = None
         self.favicon = None
         self.all_images = None
-        self.parser = None
+        self.parser = 'html5lib'
 
     def __repr__(self):
-        return '<Lassie [%s]>' % (self.parser)
+        return '<Lassie [parser: %s]>' % (self.parser)
 
     def fetch(self, url, open_graph=True, twitter_card=True, touch_icon=True,
-              favicon=True, all_images=False, parser='html5lib'):
+              favicon=True, all_images=False, parser=None):
         """Retrieves content from the specified url, parses it, and returns
         a beautifully crafted dictionary of important information about that
         web page.
@@ -78,13 +78,13 @@ class Lassie(object):
         touch_icon = merge_settings(touch_icon, self.touch_icon)
         favicon = merge_settings(favicon, self.favicon)
         all_images = merge_settings(all_images, self.all_images)
-        parser = merge_settings(parser, self.parser)
+        parser = merge_settings(parser or self.parser, self.parser)
 
         html = self._retreive_content(url)
         if not html:
             raise LassieError('There was no content to parse.')
 
-        soup = BeautifulSoup(clean_text(html), self.parser)
+        soup = BeautifulSoup(clean_text(html), parser)
 
         data = {
             'images': [],
@@ -114,7 +114,7 @@ class Lassie(object):
             data['url'] = url
 
         if not 'title' in data:
-            data['title'] = soup.find('title').string
+            data['title'] = soup.title.string
 
         return data
 
@@ -125,8 +125,6 @@ class Lassie(object):
             raise LassieError(e)
         else:
             return response.text
-
-        return ''
 
     def _filter_meta_data(self, source, soup, data):
         """This method filters the web page content for meta tags that match patterns given in the ``FILTER_MAPS``
@@ -217,6 +215,7 @@ class Lassie(object):
         """
         all_images = soup.findAll('img')
         for image in all_images:
+            # Create image list then remove duplicate images?
             img = {
                 'src': image.get('src'),
                 'alt': image.get('alt', ''),
