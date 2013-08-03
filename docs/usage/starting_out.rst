@@ -16,6 +16,7 @@ Beginning
 ---------
 
 So, let's say you want to retrieve details about a YouTube video.
+
 Specifically: http://www.youtube.com/watch?v=dQw4w9WgXcQ
 
 .. code-block:: python
@@ -53,6 +54,7 @@ Specifically: http://www.youtube.com/watch?v=dQw4w9WgXcQ
     }
 
 Or what if you wanted to get information about an article?
+
 Specifically: http://techcrunch.com/2013/01/16/github-passes-the-3-million-developer-mark/
 
 .. code-block:: python
@@ -98,7 +100,7 @@ Then pass ``open_graph=False`` to the ``fetch`` method.
             'type': u'twitter:image'
         }],
         'url': u'http://techcrunch.com/2013/01/16/github-passes-the-3-million-developer-mark/',
-        'description': u "GitHub has passed the 3 million-developer mark, a milestone for the collaborative platform for application development.\xa0GitHub said it happened Monday night on the first day of the company's\xa0all-...",
+        'description': u "GitHub has passed the 3 million-developer mark, a milestone for the collaborative platform for application development.\xa0GitHub said it happenedg Monday night on the first day of the company's\xa0all-...",
         'videos': [],
         'title': u'GitHub Passes The 3 Million Developer MarkTechCrunch'
     }

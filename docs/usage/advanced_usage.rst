@@ -44,8 +44,9 @@ If you decide that you don't want to filter for Open Graph data, instead of decl
 .. code-block:: python
 
     >>> import lassie
-    >>> lassie.fetch('https://github.com/michaelhelmick', open_graph=False)
-    >>> lassie.fetch('https://github.com/ashibble', open_graph=False)
+    >>> l = Lassie()
+    >>> l.fetch('https://github.com/michaelhelmick', open_graph=False)
+    >>> l.fetch('https://github.com/ashibble', open_graph=False)
 
 You can use the ``Lassie`` class and set attibutes on the class.
 
@@ -72,7 +73,7 @@ You can use the ``Lassie`` class and set attibutes on the class.
         'title': u 'ashibble (Alexander Shibble) \xb7 GitHub'
     }
 
-You'll notice the data that was taken from the Open Graph properties didn't appear in the result.
+You'll notice the data for the Open Graph properties wasn't returned in the last responses. That's because passing ``open_graph=False`` tells Lassie to not filter for those properties.
 
 In the edge case that there is a time or two you want to override the class attribute, just pass the parameter to ``fetch`` and Lassie will use that parameter.
 
