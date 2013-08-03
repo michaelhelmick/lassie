@@ -18,7 +18,11 @@ packages = [
 setup(
     name='lassie',
     version=__version__,
-    install_requires=['requests==1.2.3', 'beautifulsoup4==4.2.1'],
+    install_requires=[
+        'requests==1.2.3',
+        'beautifulsoup4==4.2.1',
+        'html5lib==1.0b3'
+    ],
     author='Mike Helmick',
     author_email='mikehelmick@me.com',
     license=open('LICENSE').read(),
