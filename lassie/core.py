@@ -11,25 +11,42 @@ This module contains a Lassie object to maintain settings across lassie.
 from bs4 import BeautifulSoup
 import requests
 
-from .compat import urljoin, str, basestring
-from .exceptions import LassieException
-from .filters import APPLE_TOUCH_ICON_PATTERN, FILTER_MAPS
-from .utils import clean_text
+from .compat import urljoin
+from .exceptions import LassieError
+from .filters import FILTER_MAPS
+from .utils import clean_text, convert_to_int
+
+def merge_settings(fetch_setting, class_setting):
+    """Merge settings for ``fetch``, method params have priority."""
+    if fetch_setting is None:
+        return class_setting
+
+    if class_setting is None:
+        return fetch_setting
+
+    return fetch_setting
 
 
 class Lassie(object):
-    def __init__(self, parser='html5lib'):
-        """Instantiates an instance of Lassie.
+    __attrs__ = [
+        'open_graph', 'twitter_card', 'touch_icon', 'favicon',
+        'all_images', 'parser'
+    ]
 
-        :param parser: (optional) The parsing library for BeautifulSoup to use
-        :type parser: string
-        """
-        self.parser = parser
+    def __init__(self):
+        """Instantiates an instance of Lassie."""
+        self.open_graph = None
+        self.twitter_card = None
+        self.touch_icon = None
+        self.favicon = None
+        self.all_images = None
+        self.parser = None
 
     def __repr__(self):
         return '<Lassie [%s]>' % (self.parser)
 
-    def fetch(self, url, open_graph=True, twitter_card=True, touch_icon=True, favicon=True, all_images=False):
+    def fetch(self, url, open_graph=True, twitter_card=True, touch_icon=True,
+              favicon=True, all_images=False, parser='html5lib'):
         """Retrieves content from the specified url, parses it, and returns
         a beautifully crafted dictionary of important information about that
         web page.
@@ -46,16 +63,26 @@ class Lassie(object):
         :type twitter_card: bool
         :param touch_icon: (optional) If ``True``, retrieves Apple touch icons and includes them in the response ``images`` array
         :type touch_icon: bool
-        :param: favicon: (optional) If ``True``, retrieves any favicon images and includes them in the response ``images`` array
+        :param favicon: (optional) If ``True``, retrieves any favicon images and includes them in the response ``images`` array
         :type favicon: bool
         :param all_images: (optional) If ``True``, retrieves images inside web pages body and includes them in the response ``images`` array. Default: False
         :type all_images: bool
+        :param parser: (optional) String reference for the parser that BeautifulSoup will use
+        :type parser: string
 
         """
 
+        # Set params, method params have priority over class params
+        open_graph = merge_settings(open_graph, self.open_graph)
+        twitter_card = merge_settings(twitter_card, self.twitter_card)
+        touch_icon = merge_settings(touch_icon, self.touch_icon)
+        favicon = merge_settings(favicon, self.favicon)
+        all_images = merge_settings(all_images, self.all_images)
+        parser = merge_settings(parser, self.parser)
+
         html = self._retreive_content(url)
         if not html:
-            raise LassieException('There was no content to parse.')
+            raise LassieError('There was no content to parse.')
 
         soup = BeautifulSoup(clean_text(html), self.parser)
 
@@ -73,13 +100,13 @@ class Lassie(object):
         data.update(self._filter_meta_data('generic', soup, data))
 
         if touch_icon:
-            data.update(self._get_touch_icon(soup, data, url))
+            data.update(self._filter_link_tag_data('touch_icon', soup, data, url))
 
         if favicon:
-            data.update(self._get_favicon(soup, data, url))
+            data.update(self._filter_link_tag_data('favicon', soup, data, url))
 
         if all_images:
-            # Maybe filter out 1x1?
+            # Maybe filter out 1x1, no "good" way to do this if image doesn't supply width/height
             data.update(self._find_all_images(soup, data))
 
         # TODO: Find a good place for this
@@ -87,7 +114,6 @@ class Lassie(object):
             data['url'] = url
 
         if not 'title' in data:
-            print 'fasfa'
             data['title'] = soup.find('title').string
 
         return data
@@ -96,14 +122,24 @@ class Lassie(object):
         try:
             response = requests.get(url)
         except requests.exceptions.RequestException as e:
-            raise LassieException(e)
+            raise LassieError(e)
         else:
             return response.text
 
         return ''
 
     def _filter_meta_data(self, source, soup, data):
-        meta = FILTER_MAPS[source]['meta']
+        """This method filters the web page content for meta tags that match patterns given in the ``FILTER_MAPS``
+
+        :param source: The key of the meta dictionary in ``FILTER_MAPS['meta']``
+        :type source: string
+        :param soup: BeautifulSoup instance to find meta tags
+        :type soup: instance
+        :param data: The response dictionary to manipulate
+        :type data: (dict)
+
+        """
+        meta = FILTER_MAPS['meta'][source]
         meta_map = meta['map']
 
         html = soup.find_all('meta', {meta['key']: meta['pattern']})
@@ -124,22 +160,17 @@ class Lassie(object):
 
                 if prop.startswith((image_prop, video_prop)) and \
                 prop.endswith(('width', 'height')):
-                    try:
-                        value = int(value)
-                    except ValueError:
-                        value = 0
+                    if prop.endswith(('width', 'height')):
+                        value = convert_to_int(value)
 
                 if prop == 'keywords':
                     value = value.split(',')
 
-
-
-                if image_prop and prop.startswith(image_prop):
+                if image_prop and prop.startswith(image_prop) and value:
                     image[meta_map[prop]] = value
-                elif video_prop and prop.startswith(video_prop):
+                elif video_prop and prop.startswith(video_prop) and value:
                     video[meta_map[prop]] = value
                 else:
-                    print prop, value
                     data[meta_map[prop]] = value
 
         if image:
@@ -150,36 +181,57 @@ class Lassie(object):
 
         return data
 
-    def _get_touch_icon(self, soup, data, url):
-        # Maybe do a filter for link rels like we are for meta?
-        touch_icon_data = soup.find_all('link', {'rel': APPLE_TOUCH_ICON_PATTERN})
-        for touch_icon in touch_icon_data:
-            data['images'].append({
-                'src': urljoin(url, touch_icon.get('href')),
-                'type': u'touch_icon'
-            })
+    def _filter_link_tag_data(self, source, soup, data, url):
+        """This method filters the web page content for link tags that match patterns given in the ``FILTER_MAPS``
 
-        return data
+        :param source: The key of the meta dictionary in ``FILTER_MAPS['link']``
+        :type source: string
+        :param soup: BeautifulSoup instance to find meta tags
+        :type soup: instance
+        :param data: The response dictionary to manipulate
+        :type data: (dict)
+        :param url: URL used for making an absolute url
+        :type url: string
 
-    def _get_favicon(self, soup, data, url):
-        favicon_data = soup.find_all('link', {'rel': 'icon'})
-        for favicon in favicon_data:
+        """
+        link = FILTER_MAPS['link'][source]
+
+        html = soup.find_all('link', {link['key']: link['pattern']})
+
+        for line in html:
             data['images'].append({
-                'src': urljoin(url, favicon.get('href')),
-                'type': u'favicon'
+                'src': urljoin(url, line.get('href')),
+                'type': link['type'],
             })
 
         return data
 
     def _find_all_images(self, soup, data):
-        body_images = soup.findAll('img')
-        for image in body_images:
-            data['images'].append({
+        """This method finds all images in the web page content
+
+        :param soup: BeautifulSoup instance to find meta tags
+        :type soup: instance
+        :param data: The response dictionary to manipulate
+        :type data: (dict)
+
+        """
+        all_images = soup.findAll('img')
+        for image in all_images:
+            img = {
                 'src': image.get('src'),
                 'alt': image.get('alt', ''),
                 'type': u'body_image',
-                'width': int(image.get('width', 0)),
-                'height': int(image.get('height', 0)),
-            })
+            }
+
+            # Only include width and height if included as an attribute of the element
+            width = convert_to_int(image.get('width'))
+            if width:
+                img['width'] = width
+
+            height = convert_to_int(image.get('height'))
+            if height:
+                image['height'] = height
+
+            data['images'].append(img)
 
         return data

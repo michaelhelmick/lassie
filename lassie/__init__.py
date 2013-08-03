@@ -18,4 +18,4 @@ __version__ = '0.1.0'
 
 from .api import fetch
 from .core import Lassie
-from .exceptions import LassieException
+from .exceptions import LassieError

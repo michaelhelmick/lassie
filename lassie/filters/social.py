@@ -11,8 +11,8 @@ This module contains data social related content to help Lassie filter for conte
 import re
 
 SOCIAL_MAPS = {
-    'open_graph': {
-        'meta': {
+    'meta': {
+        'open_graph': {  # http://ogp.me/
             'pattern': re.compile(r"^og:", re.I),
             'map': {
                 'og:url': 'url',
@@ -33,9 +33,7 @@ SOCIAL_MAPS = {
             'video_key': u'og:video',
             'key': 'property',
         },
-    },
-    'twitter_card': {
-        'meta': {
+        'twitter_card': {  # https://dev.twitter.com/docs/cards
             'pattern': re.compile(r"^twitter:", re.I),
             'map': {
                 'twitter:url': 'url',

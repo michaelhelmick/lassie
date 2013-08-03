@@ -20,15 +20,5 @@ is_py3 = (_ver[0] == 3)
 
 if is_py2:
     from urlparse import urljoin
-
-    str = unicode
-    basestring = basestring
-    numeric_types = (int, long, float)
-
-
 elif is_py3:
     from urllib.parse import urljoin
-
-    str = str
-    basestring = (str, bytes)
-    numeric_types = (int, float)

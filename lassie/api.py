@@ -28,10 +28,12 @@ def fetch(url, **kwargs):
     :type twitter_card: bool
     :param touch_icon: (optional) If ``True``, retrieves Apple touch icons and includes them in the response ``images`` array
     :type touch_icon: bool
-    :param: favicon: (optional) If ``True``, retrieves any favicon images and includes them in the response ``images`` array
+    :param favicon: (optional) If ``True``, retrieves any favicon images and includes them in the response ``images`` array
     :type favicon: bool
     :param all_images: (optional) If ``True``, retrieves images inside web pages body and includes them in the response ``images`` array. Default: False
     :type all_images: bool
+    :param parser: (optional) String reference for the parser that BeautifulSoup will use
+    :type parser: string
 
     """
     l = Lassie()
