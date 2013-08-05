@@ -4,7 +4,7 @@ various contributors:
 Development Lead
 ----------------
 
-- Mike Helmick <mikehelmick@me.com>
+- Mike Helmick <me@michaelhelmick.com>
 - Alexander Shibble <ashibble@gmail.com>
 
 ..
