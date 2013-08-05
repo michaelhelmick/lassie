@@ -1,6 +1,13 @@
 Lassie
 ======
 
+.. image:: https://badge.fury.io/py/lassie.png
+        :target: http://badge.fury.io/py/lassie
+.. image:: https://travis-ci.org/michaelhelmick/lassie.png?branch=master
+        :target: https://travis-ci.org/michaelhelmick/lassie
+.. image:: https://pypip.in/d/lassie/badge.png
+        :target: https://crate.io/packages/lassie/
+
 Lassie is a Python library for retrieving basic content from websites.
 
 Usage
