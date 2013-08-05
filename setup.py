@@ -24,7 +24,7 @@ setup(
         'html5lib==1.0b3'
     ],
     author='Mike Helmick',
-    author_email='mikehelmick@me.com',
+    author_email='me@michaelhelmick.com',
     license=open('LICENSE').read(),
     url='https://github.com/michaelhelmick/lassie/tree/master',
     keywords='lassie open graph web content scrape scraper',
