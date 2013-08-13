@@ -27,7 +27,7 @@ GENERIC_MAPS = {
     'link': {
         'favicon': {
             'pattern': 'icon',
-            'key': 'icon',
+            'key': 'rel',
             'type': u'favicon',
         },
     },
