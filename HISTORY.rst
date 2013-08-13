@@ -3,7 +3,7 @@
 History
 -------
 
-0.2.1 (2013-08-06)
+0.2.1 (2013-08-13)
 ++++++++++++++++++
 
 - Remove spaces from the returned keywords list
