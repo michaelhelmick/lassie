@@ -35,18 +35,18 @@ class Lassie(object):
 
     def __init__(self):
         """Instantiates an instance of Lassie."""
-        self.open_graph = None
-        self.twitter_card = None
-        self.touch_icon = None
-        self.favicon = None
-        self.all_images = None
+        self.open_graph = True
+        self.twitter_card = True
+        self.touch_icon = True
+        self.favicon = True
+        self.all_images = False
         self.parser = 'html5lib'
 
     def __repr__(self):
         return '<Lassie [parser: %s]>' % (self.parser)
 
-    def fetch(self, url, open_graph=True, twitter_card=True, touch_icon=True,
-              favicon=True, all_images=False, parser=None):
+    def fetch(self, url, open_graph=None, twitter_card=None, touch_icon=None,
+              favicon=None, all_images=None, parser=None):
         """Retrieves content from the specified url, parses it, and returns
         a beautifully crafted dictionary of important information about that
         web page.
@@ -73,11 +73,11 @@ class Lassie(object):
         """
 
         # Set params, method params have priority over class params
-        open_graph = merge_settings(open_graph, self.open_graph)
-        twitter_card = merge_settings(twitter_card, self.twitter_card)
-        touch_icon = merge_settings(touch_icon, self.touch_icon)
-        favicon = merge_settings(favicon, self.favicon)
-        all_images = merge_settings(all_images, self.all_images)
+        open_graph = merge_settings(open_graph or self.open_graph, self.open_graph)
+        twitter_card = merge_settings(twitter_card or self.twitter_card, self.twitter_card)
+        touch_icon = merge_settings(touch_icon or self.touch_icon, self.touch_icon)
+        favicon = merge_settings(favicon or self.favicon, self.favicon)
+        all_images = merge_settings(all_images or self.all_images, self.all_images)
         parser = merge_settings(parser or self.parser, self.parser)
 
         html = self._retreive_content(url)
