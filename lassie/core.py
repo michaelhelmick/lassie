@@ -162,7 +162,7 @@ class Lassie(object):
                         value = convert_to_int(value)
 
                 if prop == 'keywords':
-                    value = value.split(',')
+                    value = [v.strip() for v in value.split(',')]
 
                 if image_prop and prop.startswith(image_prop) and value:
                     image[meta_map[prop]] = value
