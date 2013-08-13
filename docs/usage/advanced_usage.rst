@@ -19,24 +19,30 @@ Constructing a ``Lassie`` class and calling ``fetch`` will use all the default p
     >>> l.fetch('https://github.com/michaelhelmick')
     {
         'images': [{
-            'src': u 'https://github.global.ssl.fastly.net/images/modules/logos_page/Octocat.png',
-            'type': u 'og:image'
+            'src': u'https://github.global.ssl.fastly.net/images/modules/logos_page/Octocat.png',
+            'type': u'og:image'
+        }, {
+            'src': u'https://github.com/favicon.ico',
+            'type': u'favicon'
         }],
-        'url': 'https://github.com/michaelhelmick/',
-        'description': u 'michaelhelmick has 21 repositories written in Python, Shell, and JavaScript. Follow their code on GitHub.',
+        'url': 'https://github.com/michaelhelmick',
+        'description': u'michaelhelmick has 22 repositories written in Python, Shell, and JavaScript. Follow their code on GitHub.',
         'videos': [],
-        'title': u 'michaelhelmick (Mike Helmick) \xb7 GitHub'
+        'title': u'michaelhelmick (Mike Helmick) \xb7 GitHub'
     }
     >>> l.fetch('https://github.com/ashibble')
     {
         'images': [{
-            'src': u 'https://github.global.ssl.fastly.net/images/modules/logos_page/Octocat.png',
-            'type': u 'og:image'
+            'src': u'https://github.global.ssl.fastly.net/images/modules/logos_page/Octocat.png',
+            'type': u'og:image'
+        }, {
+            'src': u'https://github.com/favicon.ico',
+            'type': u'favicon'
         }],
         'url': 'https://github.com/ashibble',
-        'description': u 'Follow ashibble on GitHub and watch them build beautiful projects.',
+        'description': u'Follow ashibble on GitHub and watch them build beautiful projects.',
         'videos': [],
-        'title': u 'ashibble (Alexander Shibble) \xb7 GitHub'
+        'title': u'ashibble (Alexander Shibble) \xb7 GitHub'
     }
 
 If you decide that you don't want to filter for Open Graph data, instead of declaring ``open_graph=False`` in every ``fetch`` call:
@@ -58,19 +64,25 @@ You can use the ``Lassie`` class and set attibutes on the class.
 
     >>> l.fetch('https://github.com/michaelhelmick')
     {
-        'images': [],
+        'images': [{
+            'src': u'https://github.com/favicon.ico',
+            'type': u'favicon'
+        }],
         'url': 'https://github.com/michaelhelmick',
-        'description': u 'michaelhelmick has 21 repositories written in Python, Shell, and JavaScript. Follow their code on GitHub.',
+        'description': u'michaelhelmick has 22 repositories written in Python, Shell, and JavaScript. Follow their code on GitHub.',
         'videos': [],
-        'title': u 'michaelhelmick (Mike Helmick) \xb7 GitHub'
+        'title': u'michaelhelmick (Mike Helmick) \xb7 GitHub'
     }
     >>> l.fetch('https://github.com/ashibble')
     {
-        'images': [],
+        'images': [{
+            'src': u'https://github.com/favicon.ico',
+            'type': u'favicon'
+        }],
         'url': 'https://github.com/ashibble',
-        'description': u 'Follow ashibble on GitHub and watch them build beautiful projects.',
+        'description': u'Follow ashibble on GitHub and watch them build beautiful projects.',
         'videos': [],
-        'title': u 'ashibble (Alexander Shibble) \xb7 GitHub'
+        'title': u'ashibble (Alexander Shibble) \xb7 GitHub'
     }
 
 You'll notice the data for the Open Graph properties wasn't returned in the last responses. That's because passing ``open_graph=False`` tells Lassie to not filter for those properties.
@@ -85,20 +97,26 @@ In the edge case that there is a time or two you want to override the class attr
 
     >>> l.fetch('https://github.com/michaelhelmick')
     {
-        'images': [],
+        'images': [{
+            'src': u'https://github.com/favicon.ico',
+            'type': u'favicon'
+        }],
         'url': 'https://github.com/michaelhelmick',
-        'description': u 'michaelhelmick has 21 repositories written in Python, Shell, and JavaScript. Follow their code on GitHub.',
+        'description': u'michaelhelmick has 22 repositories written in Python, Shell, and JavaScript. Follow their code on GitHub.',
         'videos': [],
-        'title': u 'michaelhelmick (Mike Helmick) \xb7 GitHub'
+        'title': u'michaelhelmick (Mike Helmick) \xb7 GitHub'
     }
     >>> l.fetch('https://github.com/ashibble', open_graph=True)
     {
         'images': [{
-            'src': u 'https://github.global.ssl.fastly.net/images/modules/logos_page/Octocat.png',
-            'type': u 'og:image'
+            'src': u'https://github.global.ssl.fastly.net/images/modules/logos_page/Octocat.png',
+            'type': u'og:image'
+        }, {
+            'src': u'https://github.com/favicon.ico',
+            'type': u'favicon'
         }],
         'url': 'https://github.com/ashibble',
-        'description': u 'Follow ashibble on GitHub and watch them build beautiful projects.',
+        'description': u'Follow ashibble on GitHub and watch them build beautiful projects.',
         'videos': [],
-        'title': u 'ashibble (Alexander Shibble) \xb7 GitHub'
+        'title': u'ashibble (Alexander Shibble) \xb7 GitHub'
     }

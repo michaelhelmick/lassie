@@ -18,7 +18,7 @@ Usage
     {
         'description': u'Music video by Rick Astley performing Never Gonna Give You Up. YouTube view counts pre-VEVO: 2,573,462 (C) 1987 PWL',
         'videos': [{
-            'src': u'http://www.youtube.com/v/dQw4w9WgXcQ?version=3&autohide=1',
+            'src': u'http://www.youtube.com/v/dQw4w9WgXcQ?autohide=1&version=3',
             'height': 480,
             'type': u'application/x-shockwave-flash',
             'width': 640
@@ -29,7 +29,7 @@ Usage
         }],
         'title': u'Rick Astley - Never Gonna Give You Up',
         'url': u'http://www.youtube.com/watch?v=dQw4w9WgXcQ',
-        'keywords': [u'Rick', u' Astley', u' Sony', u' BMG', u' Music', u' UK', u' Pop'],
+        'keywords': [u'Rick', u'Astley', u'Sony', u'BMG', u'Music', u'UK', u'Pop'],
         'images': [{
             'src': u'http://i1.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg?feature=og',
             'type': u'og:image'
