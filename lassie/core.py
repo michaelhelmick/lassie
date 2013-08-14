@@ -167,6 +167,11 @@ class Lassie(object):
                     if prop.endswith(('width', 'height')):
                         value = convert_to_int(value)
 
+                if meta_map[prop] == 'locale':
+                    locale = normalize_locale(value)
+                    if locale:
+                        data['locale'] = locale
+
                 if prop == 'keywords':
                     value = [v.strip() for v in value.split(',')]
 
