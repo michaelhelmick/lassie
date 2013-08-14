@@ -14,7 +14,7 @@ import requests
 from .compat import urljoin
 from .exceptions import LassieError
 from .filters import FILTER_MAPS
-from .utils import clean_text, convert_to_int
+from .utils import clean_text, convert_to_int, normalize_locale
 
 def merge_settings(fetch_setting, class_setting):
     """Merge settings for ``fetch``, method params have priority."""
@@ -109,7 +109,13 @@ class Lassie(object):
             # Maybe filter out 1x1, no "good" way to do this if image doesn't supply width/height
             data.update(self._find_all_images(soup, data))
 
-        # TODO: Find a good place for this
+        # TODO: Find a good place for setting url, title and locale
+        lang = soup.html.get('lang') if soup.html.get('lang') else soup.html.get('xml:lang')
+        if lang and (not 'locale' in data):
+            locale = normalize_locale(lang)
+            if locale:
+                data['locale'] = locale
+
         if not 'url' in data:
             data['url'] = url
 
@@ -160,6 +166,11 @@ class Lassie(object):
                 prop.endswith(('width', 'height')):
                     if prop.endswith(('width', 'height')):
                         value = convert_to_int(value)
+
+                if meta_map[prop] == 'locale':
+                    locale = normalize_locale(value)
+                    if locale:
+                        data['locale'] = locale
 
                 if prop == 'keywords':
                     value = [v.strip() for v in value.split(',')]
