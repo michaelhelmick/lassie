@@ -17,7 +17,6 @@ class FakeLassie(Lassie):
 class LassieOpenGraphTestCase(unittest.TestCase):
     def setUp(self):
         self.api = FakeLassie()
-        self.api.parser
 
     def test_open_graph_all_properties(self):
         url = 'http://lassie.it/open_graph/all_properties.html'
