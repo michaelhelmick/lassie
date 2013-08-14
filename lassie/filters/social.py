@@ -41,7 +41,6 @@ SOCIAL_MAPS = {
                 'twitter:url': 'url',
                 'twitter:title': 'title',
                 'twitter:description': 'description',
-                'twitter:locale': 'locale',
 
                 'twitter:image': 'src',
                 'twitter:image:width': 'width',
