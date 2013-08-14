@@ -46,7 +46,7 @@ class Lassie(object):
         return '<Lassie [parser: %s]>' % (self.parser)
 
     def fetch(self, url, open_graph=None, twitter_card=None, touch_icon=None,
-              favicon=None, all_images=None, parser=None):
+              favicon=None, all_images=None, parser=None, language=True):
         """Retrieves content from the specified url, parses it, and returns
         a beautifully crafted dictionary of important information about that
         web page.
@@ -108,6 +108,9 @@ class Lassie(object):
         if all_images:
             # Maybe filter out 1x1, no "good" way to do this if image doesn't supply width/height
             data.update(self._find_all_images(soup, data))
+
+        if language:
+            data.update(self._find_document_language(soup, data))
 
         # TODO: Find a good place for this
         if not 'url' in data:
@@ -233,4 +236,16 @@ class Lassie(object):
 
             data['images'].append(img)
 
+        return data
+
+    def _find_document_language(self, soup, data):
+        """This method finds the lanuage of the returned HTML _find_document_language
+
+        :param soup: BeautifulSoup instance to find meta tags
+        :type soup: instance
+        :param data: The response dictionary to manipulate
+        :type data: (dict)
+
+        """
+        data['language'] = soup.html.get('lang')
         return data
