@@ -22,6 +22,7 @@ class LassieTwitterCardTestCase(unittest.TestCase):
         url = 'http://lassie.it/generic/all_properties.html'
         data = self.api.fetch(url)
 
+        self.assertEqual(data['language'], 'en-us')
         self.assertEqual(data['title'], 'Lassie Generic Test | all_properties')
         self.assertEqual(data['description'], 'Just a random description of a web page.')
         self.assertEqual(len(data['keywords']), 5)
