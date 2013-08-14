@@ -8,6 +8,8 @@ This module contains data social related content to help Lassie filter for conte
 
 """
 
+from ..compat import str
+
 import re
 
 SOCIAL_MAPS = {
@@ -29,8 +31,8 @@ SOCIAL_MAPS = {
                 'og:video:height': 'height',
                 'og:video:type': 'type',
             },
-            'image_key': u'og:image',
-            'video_key': u'og:video',
+            'image_key': str('og:image'),
+            'video_key': str('og:video'),
             'key': 'property',
         },
         'twitter_card': {  # https://dev.twitter.com/docs/cards
@@ -50,8 +52,8 @@ SOCIAL_MAPS = {
                 'twitter:player:height': 'height',
                 'twitter:player:content_type': 'type',
             },
-            'image_key': u'twitter:image',
-            'video_key': u'twitter:player',
+            'image_key': str('twitter:image'),
+            'video_key': str('twitter:player'),
             'key': 'name',
         },
     }

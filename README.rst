@@ -18,7 +18,6 @@ Usage
     >>> import lassie
     >>> lassie.fetch('http://www.youtube.com/watch?v=dQw4w9WgXcQ')
     {
-        'locale': u'en_US',
         'description': u'Music video by Rick Astley performing Never Gonna Give You Up. YouTube view counts pre-VEVO: 2,573,462 (C) 1987 PWL',
         'videos': [{
             'src': u'http://www.youtube.com/v/dQw4w9WgXcQ?autohide=1&version=3',
@@ -45,7 +44,8 @@ Usage
         }, {
             'src': u'http://s.ytimg.com/yts/img/favicon_32-vflWoMFGx.png',
             'type': u'favicon'
-        }]
+        }],
+        'locale': u'en_US'
     }
 
 Install

@@ -8,6 +8,8 @@ This module contains data about generic type content to help Lassie filter for c
 
 """
 
+from ..compat import str
+
 import re
 
 GENERIC_MAPS = {
@@ -28,7 +30,7 @@ GENERIC_MAPS = {
         'favicon': {
             'pattern': 'icon',
             'key': 'rel',
-            'type': u'favicon',
+            'type': str('favicon'),
         },
     },
 }

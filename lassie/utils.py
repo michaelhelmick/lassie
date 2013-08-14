@@ -8,6 +8,8 @@ This module contains the set of helper functions executed by Lassie methods.
 
 """
 
+from .compat import str
+
 import locale
 import re
 
@@ -41,8 +43,8 @@ def normalize_locale(value):
     if the_locale != value:
         # Should we return the actual locale, returned from the locale lib instead of splitting?
         try:
-            return the_locale.split('.')[0]
-        except:
+            return str(the_locale.split('.')[0])
+        except IndexError:
             pass
     return None
 
