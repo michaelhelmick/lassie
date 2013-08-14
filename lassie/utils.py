@@ -8,6 +8,7 @@ This module contains the set of helper functions executed by Lassie methods.
 
 """
 
+import locale
 import re
 
 CLEANER = re.compile(r'[\r\n\t]')
@@ -32,3 +33,16 @@ def convert_to_int(value):
         return int(value)
     except TypeError:
         return None
+
+def normalize_locale(value):
+    value = value.replace('-', '_')
+    the_locale = locale.normalize(value)
+
+    if the_locale != value:
+        # Should we return the actual locale, returned from the locale lib instead of splitting?
+        try:
+            return the_locale.split('.')[0]
+        except:
+            pass
+    return None
+
