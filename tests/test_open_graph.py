@@ -17,16 +17,15 @@ class FakeLassie(Lassie):
 class LassieOpenGraphTestCase(unittest.TestCase):
     def setUp(self):
         self.api = FakeLassie()
-        self.api.parser
 
-    def test_class_attrs_set(self):
-
+    def test_open_graph_all_properties(self):
         url = 'http://lassie.it/open_graph/all_properties.html'
         data = self.api.fetch(url)
 
         self.assertEqual(data['url'], url)
         self.assertEqual(data['title'], 'Lassie Open Graph All Properies Test')
         self.assertEqual(data['description'], 'Just a test template with OG data!')
+        self.assertEqual(data['locale'], 'en_US')
 
         self.assertEqual(len(data['images']), 1)
         image = data['images'][0]

@@ -42,7 +42,8 @@ Usage
         }, {
             'src': u'http://s.ytimg.com/yts/img/favicon_32-vflWoMFGx.png',
             'type': u'favicon'
-        }]
+        }],
+        'locale': u'en_US'
     }
 
 
