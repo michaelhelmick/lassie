@@ -1,26 +1,12 @@
-from lassie import Lassie
-from lassie.compat import urlparse
+from .base import LassieBaseTestCase
 
-import unittest
-
-
-class FakeLassie(Lassie):
-    def _retreive_content(self, url):
-        filename = urlparse(url).path
-        file = open('./templates/%s' % filename, 'r')
-        html = file.read()
-        file.close()
-
-        return html
+import lassie
 
 
-class LassieOpenGraphTestCase(unittest.TestCase):
-    def setUp(self):
-        self.api = FakeLassie()
-
+class LassieOpenGraphTestCase(LassieBaseTestCase):
     def test_open_graph_all_properties(self):
         url = 'http://lassie.it/open_graph/all_properties.html'
-        data = self.api.fetch(url)
+        data = lassie.fetch(url)
 
         self.assertEqual(data['url'], url)
         self.assertEqual(data['title'], 'Lassie Open Graph All Properies Test')
@@ -43,20 +29,20 @@ class LassieOpenGraphTestCase(unittest.TestCase):
 
     def test_open_graph_no_og_title_no_og_url(self):
         url = 'http://lassie.it/open_graph/no_og_title_no_og_url.html'
-        data = self.api.fetch(url)
+        data = lassie.fetch(url)
 
         self.assertEqual(data['url'], url)
         self.assertEqual(data['title'], 'Lassie Open Graph Test | No og:title, No og:url')
 
     def test_open_graph_og_image_plus_two_body_images(self):
         url = 'http://lassie.it/open_graph/og_image_plus_two_body_images.html'
-        data = self.api.fetch(url)
+        data = lassie.fetch(url)
 
         # Try without passing "all_images", then pass it
 
         self.assertEqual(len(data['images']), 1)
 
-        data = self.api.fetch(url, all_images=True)
+        data = lassie.fetch(url, all_images=True)
 
         self.assertEqual(len(data['images']), 3)
 

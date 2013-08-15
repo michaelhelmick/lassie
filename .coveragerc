@@ -1,5 +1,5 @@
 [run]
-omit = lassie/compat.py
+omit = ../lassie/compat.py
 
 [report]
 exclude_lines =
