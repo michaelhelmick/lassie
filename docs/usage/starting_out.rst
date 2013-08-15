@@ -160,17 +160,19 @@ Sometimes you might want to obtain a list of all the images on a web page... sim
             'alt': u'',
             'type': u'body_image'
         }, {
-            'src': u'http://tctechcrunch2011.files.wordpress.com/2013/08/countdown5a.jpg?w=640',
+            'src': u'http://tctechcrunch2011.files.wordpress.com/2013/08/countdown4.jpg?w=640',
             'alt': u'Main Event Page',
             'type': u'body_image'
         }, {
             'src': u'http://2.gravatar.com/avatar/b4e205744ae2f9b44921d103b4d80e54?s=60&d=identicon&r=G',
             'alt': u'',
+            'height': 60,
             'type': u'body_image',
             'width': 60
         }, {
             'src': u'http://tctechcrunch2011.files.wordpress.com/2013/01/github-logo.png?w=300',
             'alt': u'github-logo',
+            'height': 300,
             'type': u'body_image',
             'width': 300
         }, {
@@ -182,7 +184,7 @@ Sometimes you might want to obtain a list of all the images on a web page... sim
             'alt': '',
             'type': u'body_image'
         }, {
-            'src': u'http://tctechcrunch2011.files.wordpress.com/2013/08/htc.png?w=89&h=64&crop=1',
+            'src': u'http://tctechcrunch2011.files.wordpress.com/2013/08/made-in-space-zero-gravity.jpg?w=89&h=64&crop=1',
             'alt': '',
             'type': u'body_image'
         }, {
@@ -194,6 +196,10 @@ Sometimes you might want to obtain a list of all the images on a web page... sim
             'alt': '',
             'type': u'body_image'
         }, {
+            'src': u'http://tctechcrunch2011.files.wordpress.com/2013/08/htc.png?w=89&h=64&crop=1',
+            'alt': '',
+            'type': u'body_image'
+        }, {
             'src': u'http://tctechcrunch2011.files.wordpress.com/2013/08/screen-shot-2013-08-13-at-8-18-25-pm.png?w=89&h=64&crop=1',
             'alt': '',
             'type': u'body_image'
@@ -202,19 +208,11 @@ Sometimes you might want to obtain a list of all the images on a web page... sim
             'alt': '',
             'type': u'body_image'
         }, {
-            'src': u'http://tctechcrunch2011.files.wordpress.com/2013/08/flexible-display.jpg?w=89&h=64&crop=1',
+            'src': u'http://tctechcrunch2011.files.wordpress.com/2013/08/surface-14.jpg?w=89&h=64&crop=1',
             'alt': '',
             'type': u'body_image'
         }, {
-            'src': u'http://tctechcrunch2011.files.wordpress.com/2013/08/screen-shot-2013-08-14-at-11-52-50-am.png?w=89&h=64&crop=1',
-            'alt': '',
-            'type': u'body_image'
-        }, {
-            'src': u'http://tctechcrunch2011.files.wordpress.com/2013/08/screen-shot-2013-08-14-at-10-23-20-am.png?w=89&h=64&crop=1',
-            'alt': '',
-            'type': u'body_image'
-        }, {
-            'src': u'http://tctechcrunch2011.files.wordpress.com/2013/08/google-quick-answer-hotel-1-png.jpg?w=89&h=64&crop=1',
+            'src': u'http://tctechcrunch2011.files.wordpress.com/2013/08/sprawl_tuned_robot.jpg?w=89&h=64&crop=1',
             'alt': '',
             'type': u'body_image'
         }, {
@@ -222,15 +220,27 @@ Sometimes you might want to obtain a list of all the images on a web page... sim
             'alt': '',
             'type': u'body_image'
         }, {
-            'src': u'http://tctechcrunch2011.files.wordpress.com/2013/08/surface-14.jpg?w=89&h=64&crop=1',
+            'src': u'http://tctechcrunch2011.files.wordpress.com/2013/08/facebook-commerce.png?w=89&h=64&crop=1',
             'alt': '',
             'type': u'body_image'
         }, {
-            'src': u'http://tctechcrunch2011.files.wordpress.com/2013/08/peter-deng-instagram.jpg?w=89&h=64&crop=1',
+            'src': u'http://tctechcrunch2011.files.wordpress.com/2013/08/screen-shot-2013-08-14-at-10-23-20-am.png?w=89&h=64&crop=1',
             'alt': '',
             'type': u'body_image'
         }, {
-            'src': u'http://tctechcrunch2011.files.wordpress.com/2013/08/marketplace-flow.png?w=89&h=64&crop=1',
+            'src': u'http://tctechcrunch2011.files.wordpress.com/2012/10/ibm_logo.jpg?w=89&h=64&crop=1',
+            'alt': '',
+            'type': u'body_image'
+        }, {
+            'src': u'http://tctechcrunch2011.files.wordpress.com/2013/08/screen-shot-2013-08-15-at-12-09-16.png?w=89&h=64&crop=1',
+            'alt': '',
+            'type': u'body_image'
+        }, {
+            'src': u'http://tctechcrunch2011.files.wordpress.com/2013/08/inklogo.jpg?w=89&h=64&crop=1',
+            'alt': '',
+            'type': u'body_image'
+        }, {
+            'src': u'http://tctechcrunch2011.files.wordpress.com/2013/08/screen-shot-2013-08-15-at-9-31-21-am.png?w=89&h=64&crop=1',
             'alt': '',
             'type': u'body_image'
         }]

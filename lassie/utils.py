@@ -44,7 +44,7 @@ def normalize_locale(value):
         # Should we return the actual locale, returned from the locale lib instead of splitting?
         try:
             return str(the_locale.split('.')[0])
-        except IndexError:
+        except IndexError:  # pragma: no cover
             pass
     return None
 
