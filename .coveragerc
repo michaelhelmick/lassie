@@ -1,0 +1,8 @@
+[run]
+omit = ../lassie/compat.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+
+    def __repr__

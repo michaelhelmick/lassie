@@ -1,0 +1,5 @@
+requests==1.2.3
+beautifulsoup4==4.2.1
+html5lib==1.0b3
+python-coveralls==2.1.0
+nose-cov==1.6

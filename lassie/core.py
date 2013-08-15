@@ -30,7 +30,7 @@ def merge_settings(fetch_setting, class_setting):
 class Lassie(object):
     __attrs__ = [
         'open_graph', 'twitter_card', 'touch_icon', 'favicon',
-        'all_images', 'parser'
+        'all_images', 'parser', '_retreive_content'
     ]
 
     def __init__(self):
@@ -73,12 +73,12 @@ class Lassie(object):
         """
 
         # Set params, method params have priority over class params
-        open_graph = merge_settings(open_graph or self.open_graph, self.open_graph)
-        twitter_card = merge_settings(twitter_card or self.twitter_card, self.twitter_card)
-        touch_icon = merge_settings(touch_icon or self.touch_icon, self.touch_icon)
-        favicon = merge_settings(favicon or self.favicon, self.favicon)
-        all_images = merge_settings(all_images or self.all_images, self.all_images)
-        parser = merge_settings(parser or self.parser, self.parser)
+        open_graph = merge_settings(open_graph, self.open_graph)
+        twitter_card = merge_settings(twitter_card, self.twitter_card)
+        touch_icon = merge_settings(touch_icon, self.touch_icon)
+        favicon = merge_settings(favicon, self.favicon)
+        all_images = merge_settings(all_images, self.all_images)
+        parser = merge_settings(parser, self.parser)
 
         html = self._retreive_content(url)
         if not html:
@@ -124,7 +124,7 @@ class Lassie(object):
 
         return data
 
-    def _retreive_content(self, url):
+    def _retreive_content(self, url):  # pragma: no cover
         try:
             response = requests.get(url)
         except requests.exceptions.RequestException as e:
@@ -240,7 +240,7 @@ class Lassie(object):
 
             height = convert_to_int(image.get('height'))
             if height:
-                image['height'] = height
+                img['height'] = height
 
             data['images'].append(img)
 
