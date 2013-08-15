@@ -3,7 +3,7 @@
 History
 -------
 
-0.3.0 (2013-08-xx)
+0.3.0 (2013-08-15)
 ++++++++++++++++++
 
 - Added support for `locale` to be returned. If `lang` is specified in the `html` tag and it normalizes to an actual locale, it will be added to the returned data.
