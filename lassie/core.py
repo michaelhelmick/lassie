@@ -107,7 +107,7 @@ class Lassie(object):
 
         if all_images:
             # Maybe filter out 1x1, no "good" way to do this if image doesn't supply width/height
-            data.update(self._find_all_images(soup, data))
+            data.update(self._find_all_images(soup, data, url))
 
         # TODO: Find a good place for setting url, title and locale
         lang = soup.html.get('lang') if soup.html.get('lang') else soup.html.get('xml:lang')
@@ -215,7 +215,7 @@ class Lassie(object):
 
         return data
 
-    def _find_all_images(self, soup, data):
+    def _find_all_images(self, soup, data, url):
         """This method finds all images in the web page content
 
         :param soup: BeautifulSoup instance to find meta tags
@@ -228,7 +228,7 @@ class Lassie(object):
         for image in all_images:
             # Create image list then remove duplicate images?
             img = {
-                'src': image.get('src'),
+                'src': urljoin(url, image.get('src')),
                 'alt': image.get('alt', ''),
                 'type': u'body_image',
             }
