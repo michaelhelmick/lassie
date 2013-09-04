@@ -14,6 +14,7 @@ import locale
 import re
 
 CLEANER = re.compile(r'[\r\n\t]')
+RE_INT = re.compile(r'\d+')
 
 def clean_text(value):
     """Removes all line breaks, new lines and tabs from the specified content
@@ -31,10 +32,14 @@ def convert_to_int(value):
     :type value: string or int
 
     """
-    try:
-        return int(value)
-    except TypeError:
+    if not value:
         return None
+
+    # only consider digits
+    match = re.search(RE_INT, value)
+    if match:
+        return int(match.group(0))
+    return None
 
 def normalize_locale(value):
     value = value.replace('-', '_')
