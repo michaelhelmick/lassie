@@ -35,11 +35,12 @@ def convert_to_int(value):
     if not value:
         return None
 
-    # only consider digits
-    match = re.search(RE_INT, value)
-    if match:
-        return int(match.group(0))
-    return None
+    # Apart from numbers also accept values that end with px
+    value = value.strip().strip('px')
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
 
 def normalize_locale(value):
     value = value.replace('-', '_')
