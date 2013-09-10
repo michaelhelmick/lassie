@@ -27,3 +27,25 @@ class LassieTwitterCardTestCase(LassieBaseTestCase):
         image = data['images'][0]
 
         self.assertEqual(image['type'], 'favicon')
+
+    def test_image_dimensions(self):
+        url = 'http://lassie.it/generic/image_dimensions.html'
+        data = lassie.fetch(url, all_images=True)
+
+        self.assertEqual(len(data['images']), 4)
+
+        image = data['images'][0]
+        self.assertEqual(image['width'], 100)
+        self.assertEqual(image['height'], 100)
+
+        image = data['images'][1]
+        self.assertEqual(image['width'], 100)
+        self.assertEqual(image['height'], 100)
+
+        image = data['images'][2]
+        self.assertEqual(image['width'], 100)
+        self.assertEqual(image['height'], 100)
+
+        image = data['images'][3]
+        self.assertEqual(image['width'], 100)
+        self.assertEqual(image['height'], 100)
