@@ -46,3 +46,38 @@ class LassieCoreTestCase(LassieBaseTestCase):
         last_image = data['images'][2]
         self.assertEqual(last_image['width'], 550)
         self.assertEqual(last_image['height'], 365)
+
+    def test_image_dimensions(self):
+        url = 'http://lassie.it/core/image_dimensions.html'
+
+        l = Lassie()
+        data = l.fetch(url, all_images=True)
+
+        self.assertEqual(len(data['images']), 4)
+
+        image = data['images'][0]
+        self.assertEqual(image['width'], 100)
+        self.assertEqual(image['height'], 100)
+
+        image = data['images'][1]
+        self.assertEqual(image['width'], 100)
+        self.assertEqual(image['height'], 100)
+
+        image = data['images'][2]
+        self.assertEqual(image['width'], 100)
+        self.assertEqual(image['height'], 100)
+
+        image = data['images'][3]
+        self.assertEqual(image['width'], 100)
+        self.assertEqual(image['height'], 100)
+
+    def test_bad_image_dimensions(self):
+        url = 'http://lassie.it/core/bad_image_dimensions.html'
+
+        l = Lassie()
+        data = l.fetch(url, all_images=True)
+
+        # lassie.utils.convert_to_int will except a TypeError or ValueError and pass (not setting a width/height on the image)
+        image = data['images'][0]
+        self.assertTrue(not 'width' in image)
+        self.assertTrue(not 'height' in image)
