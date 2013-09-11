@@ -119,7 +119,7 @@ class Lassie(object):
         if not 'url' in data:
             data['url'] = url
 
-        if not 'title' in data:
+        if not 'title' in data and hasattr(soup.title, 'string'):
             data['title'] = soup.title.string
 
         return data

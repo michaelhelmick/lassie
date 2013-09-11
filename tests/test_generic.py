@@ -27,3 +27,9 @@ class LassieTwitterCardTestCase(LassieBaseTestCase):
         image = data['images'][0]
 
         self.assertEqual(image['type'], 'favicon')
+
+    def test_no_title(self):
+        url = 'http://lassie.it/generic/no_title.html'
+        data = lassie.fetch(url)
+
+        self.assertTrue(not 'title' in data)
