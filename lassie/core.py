@@ -41,6 +41,7 @@ class Lassie(object):
         self.favicon = True
         self.all_images = False
         self.parser = 'html5lib'
+        self.request_opts = {}
 
     def __repr__(self):
         return '<Lassie [parser: %s]>' % (self.parser)
@@ -126,7 +127,19 @@ class Lassie(object):
 
     def _retreive_content(self, url):  # pragma: no cover
         try:
-            response = requests.get(url)
+            client = requests.Session()
+
+            request_kwargs = {}
+            request_opts_copy = self.request_opts.copy()
+            for k, v in request_opts_copy.items():
+                if k in ('cert', 'headers', 'hooks', 'max_redirects', 'proxies'):
+                    # Set client attributes
+                    setattr(client, k, v)
+                elif k in ('timeout', 'allow_redirects', 'stream', 'verify'):
+                    # Set request specific kwarg
+                    request_kwargs[k] = v
+
+            response = client.get(url, **request_kwargs)
         except requests.exceptions.RequestException as e:
             raise LassieError(e)
         else:
