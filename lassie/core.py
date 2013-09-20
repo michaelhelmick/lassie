@@ -30,7 +30,7 @@ def merge_settings(fetch_setting, class_setting):
 class Lassie(object):
     __attrs__ = [
         'open_graph', 'twitter_card', 'touch_icon', 'favicon',
-        'all_images', 'parser', '_retreive_content'
+        'all_images', 'parser', '_retreive_content', 'client'
     ]
 
     def __init__(self):
@@ -41,7 +41,20 @@ class Lassie(object):
         self.favicon = True
         self.all_images = False
         self.parser = 'html5lib'
-        self.request_opts = {}
+        self._request_opts = {}
+        self.client = requests.Session()
+
+    @property
+    def request_opts(self):
+        return self._request_opts
+
+    @request_opts.setter
+    def request_opts(self, _dict):
+        for k, v in _dict.items():
+            self._request_opts[k] = v
+            if k in ('cert', 'headers', 'hooks', 'max_redirects', 'proxies'):
+                setattr(self.client, k, v)
+
 
     def __repr__(self):
         return '<Lassie [parser: %s]>' % (self.parser)
@@ -127,19 +140,13 @@ class Lassie(object):
 
     def _retreive_content(self, url):  # pragma: no cover
         try:
-            client = requests.Session()
-
             request_kwargs = {}
-            request_opts_copy = self.request_opts.copy()
-            for k, v in request_opts_copy.items():
-                if k in ('cert', 'headers', 'hooks', 'max_redirects', 'proxies'):
-                    # Set client attributes
-                    setattr(client, k, v)
-                elif k in ('timeout', 'allow_redirects', 'stream', 'verify'):
+            for k, v in self._request_opts.items():
+                if k in ('timeout', 'allow_redirects', 'stream', 'verify'):
                     # Set request specific kwarg
                     request_kwargs[k] = v
 
-            response = client.get(url, **request_kwargs)
+            response = self.client.get(url, **request_kwargs)
         except requests.exceptions.RequestException as e:
             raise LassieError(e)
         else:

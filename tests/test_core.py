@@ -81,3 +81,14 @@ class LassieCoreTestCase(LassieBaseTestCase):
         image = data['images'][0]
         self.assertTrue(not 'width' in image)
         self.assertTrue(not 'height' in image)
+
+    def test_request_opts(self):
+        l = Lassie()
+        l.request_opts = {
+            'headers': {
+                'User-Agent': 'lassie python',
+            },
+            'timeout': 3
+        }
+
+        self.assertTrue('headers' in l.request_opts)
