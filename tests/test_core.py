@@ -91,4 +91,21 @@ class LassieCoreTestCase(LassieBaseTestCase):
             'timeout': 3
         }
 
+        self.assertTrue(set(('headers', 'timeout')).issubset(l.request_opts))
+
+        # If they modify one of the keys value, make sure it actually happened
+        l.request_opts['headers'].update({'Content-Type': 'application/json'})
+        self.assertEqual(len(l.request_opts['headers']), 2)
+        self.assertTrue(set(('User-Agent', 'Content-Type')).issubset(l.request_opts['headers']))
+
+    def test_bad_request_opts(self):
+        l = Lassie()
+        l.request_opts = {
+            'bad_key': True,
+            'headers': {
+                'User-Agent': 'lassie python'
+            }
+        }
+
+        self.assertTrue('bad_key' not in l.request_opts)
         self.assertTrue('headers' in l.request_opts)
