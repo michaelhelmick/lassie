@@ -120,3 +120,39 @@ In the edge case that there is a time or two you want to override the class attr
         'videos': [],
         'title': u'ashibble (Alexander Shibble) \xb7 GitHub'
     }
+
+
+Manipulate the Request (headers, proxies, etc.)
+-----------------------------------------------
+
+There are times when you may want to turn SSL verification off, send custom headers, or add proxies for the request to go through.
+
+Lassie uses the `requests <http://python-requests.org>`_ library to make web requests. ``requests`` accepts a few parameters to allow developers to manipulate the acutal HTTP request.
+
+Here is an example of sending custom headers to a lassie request:
+
+.. code-block:: python
+
+    from lassie import Lassie
+
+    l = Lassie()
+    l.request_opts = {
+        'headers': {
+            'User-Agent': 'python lassie'
+        }
+    }
+    l.fetch('http://google.com')
+
+Maybe you want to set a request timeout, here's another example:
+
+.. code-block:: python
+
+    from lassie import Lassie
+
+    l = Lassie()
+    l.request_opts = {
+        'timeout': 10  # 10 seconds
+    }
+
+    # If the response takes longer than 10 seconds this request will fail
+    l.fetch('http://google.com')
