@@ -16,6 +16,13 @@ from .exceptions import LassieError
 from .filters import FILTER_MAPS
 from .utils import clean_text, convert_to_int, normalize_locale
 
+
+REQUEST_OPTS = {
+    'client': ('cert', 'headers', 'hooks', 'max_redirects', 'proxies'),
+    'request': ('timeout', 'allow_redirects', 'stream', 'verify'),
+}
+
+
 def merge_settings(fetch_setting, class_setting):
     """Merge settings for ``fetch``, method params have priority."""
     if fetch_setting is None:
@@ -30,7 +37,7 @@ def merge_settings(fetch_setting, class_setting):
 class Lassie(object):
     __attrs__ = [
         'open_graph', 'twitter_card', 'touch_icon', 'favicon',
-        'all_images', 'parser', '_retreive_content'
+        'all_images', 'parser', '_retreive_content', 'client'
     ]
 
     def __init__(self):
@@ -41,6 +48,21 @@ class Lassie(object):
         self.favicon = True
         self.all_images = False
         self.parser = 'html5lib'
+        self._request_opts = {}
+        self.client = requests.Session()
+
+    @property
+    def request_opts(self):
+        return self._request_opts
+
+    @request_opts.setter
+    def request_opts(self, _dict):
+        for k, v in _dict.items():
+            if (k in REQUEST_OPTS['client'] or k in REQUEST_OPTS['request']):
+                self._request_opts[k] = v
+            if k in REQUEST_OPTS['client']:
+                setattr(self.client, k, v)
+
 
     def __repr__(self):
         return '<Lassie [parser: %s]>' % (self.parser)
@@ -126,7 +148,13 @@ class Lassie(object):
 
     def _retreive_content(self, url):  # pragma: no cover
         try:
-            response = requests.get(url)
+            request_kwargs = {}
+            for k, v in self._request_opts.items():
+                if k in REQUEST_OPTS['request']:
+                    # Set request specific kwarg
+                    request_kwargs[k] = v
+
+            response = self.client.get(url, **request_kwargs)
         except requests.exceptions.RequestException as e:
             raise LassieError(e)
         else:
