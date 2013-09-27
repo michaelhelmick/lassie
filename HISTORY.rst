@@ -3,6 +3,14 @@
 History
 -------
 
+0.4.0 (2013-08-15)
+++++++++++++++++++
+- Updated `requests` and `beautifulsoup4` library versions
+- Added support for manipulating the request, see Advanced Usage docs
+- Fixed issue where `lassie.fetch` would break if the page had no title
+- Lassie is now more lenient when it comes to width and height values of images (now accepts integers (100) or integer with px (100px)
+- Image URLs for open graph images are now absolute
+
 0.3.0 (2013-08-15)
 ++++++++++++++++++
 
