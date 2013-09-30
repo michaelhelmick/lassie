@@ -12,4 +12,4 @@ Development Lead
 Patches and Suggestions
 -----------------------
 
-- `Ramiro Gómez <https://github.com/yaph>`_ - Making Open Graph image URLs absolute, image width/heights are more lenient 
+- `Ramiro Gómez <https://github.com/yaph>`_ - Made image URLs absolute, image width/heights are more lenient 
