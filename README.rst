@@ -12,6 +12,8 @@ Lassie
 
 Lassie is a Python library for retrieving basic content from websites.
 
+.. image:: https://i.imgur.com/QrvNfAX.gif
+
 Usage
 -----
 
@@ -71,3 +73,4 @@ Documentation
 -------------
 
 Documentation can be found here: https://lassie.readthedocs.org/
+
