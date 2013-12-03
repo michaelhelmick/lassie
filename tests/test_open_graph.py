@@ -52,3 +52,10 @@ class LassieOpenGraphTestCase(LassieBaseTestCase):
         self.assertEqual(image_0['type'], 'og:image')
         self.assertEqual(image_1['type'], 'body_image')
         self.assertEqual(image_2['type'], 'body_image')
+
+    def test_open_graph_og_image_relative_url(self):
+        url = 'http://lassie.it/open_graph/og_image_relative_url.html'
+        data = lassie.fetch(url)
+
+        self.assertEqual(
+            data['images'][0]['src'], 'http://lassie.it/open_graph/name.jpg')
