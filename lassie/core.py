@@ -114,7 +114,7 @@ class Lassie(object):
         }
 
         if open_graph:
-            data.update(self._filter_meta_data('open_graph', soup, data))
+            data.update(self._filter_meta_data('open_graph', soup, data, url))
 
         if twitter_card:
             data.update(self._filter_meta_data('twitter_card', soup, data))
@@ -160,7 +160,7 @@ class Lassie(object):
         else:
             return response.text
 
-    def _filter_meta_data(self, source, soup, data):
+    def _filter_meta_data(self, source, soup, data, url=None):
         """This method filters the web page content for meta tags that match patterns given in the ``FILTER_MAPS``
 
         :param source: The key of the meta dictionary in ``FILTER_MAPS['meta']``
@@ -204,6 +204,9 @@ class Lassie(object):
                     value = [v.strip() for v in value.split(',')]
 
                 if image_prop and prop.startswith(image_prop) and value:
+                    # og:image URLs can be relative
+                    if prop == 'og:image' and url:
+                        value = urljoin(url, value)
                     image[meta_map[prop]] = value
                 elif video_prop and prop.startswith(video_prop) and value:
                     video[meta_map[prop]] = value
