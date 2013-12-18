@@ -14,6 +14,7 @@ import requests
 from .compat import urljoin
 from .exceptions import LassieError
 from .filters import FILTER_MAPS
+from .filters.oembed import OEMBED_PROVIDERS_MAPS, OMITTED_OEMBED_KEYS
 from .utils import clean_text, convert_to_int, normalize_locale
 
 
@@ -121,6 +122,15 @@ class Lassie(object):
 
         data.update(self._filter_meta_data('generic', soup, data))
 
+        data['oembed'] = self._filter_oembed(soup, url)
+
+        if data['videos']:
+            # if there have been videos found via Open Graph or Twitter Card scanning, check to see if it's embeddable
+            # this currently is only relative to YouTube videos
+            # http://www.youtube.com/watch?v=8Kkrmubsgf8 is not embeddable (as per users request) so you it won't play on your website
+            # http://www.youtube.com/watch?v=dQw4w9WgXcQ is embeddable and will play on your website
+            data.update(self._filter_link_tag_data('embeddable', soup, data, url))
+
         if touch_icon:
             data.update(self._filter_link_tag_data('touch_icon', soup, data, url))
 
@@ -221,6 +231,56 @@ class Lassie(object):
 
         return data
 
+    def _filter_oembed(self, soup, url):
+        data = None
+        for provider in OEMBED_PROVIDERS_MAPS:
+            if provider['pattern'].match(url):
+                provider['querystring']['url'] = url
+
+                try:
+                    response = requests.get(provider['endpoint'], params=provider['querystring'])
+                except requests.RequestException as e:
+                    raise LassieError(str(e))
+
+                content = response.json()
+
+                data = {
+                    'links': [],
+                    'meta': [],
+                }
+                for item in provider['map']:
+                    key = item['array']
+
+                    item_data = {
+                        'type': item['type'],
+                    }
+
+                    if 'rel' in item:
+                        item_data['rel'] = item['rel']
+
+                    for prop in item:
+                        # Uniform property for `item_data`
+                        # Some services may return href or src for what could be considered the same thing
+                        uni_prop = item[prop]  # i.e. url, width, height, etc.
+
+                        # There are some keys that we include in the filters.oembed maps
+                        # that are there only for relevance in this function
+                        if prop not in OMITTED_OEMBED_KEYS:
+                            if isinstance(uni_prop, tuple):  # If it is a tuple, this item will be nested at `item_data[uni_prop[0]]`
+                                parent = item_data.get(uni_prop[0])
+                                if not parent:
+                                    item_data[uni_prop[0]] = {}
+                                    parent = item_data[uni_prop[0]]
+
+                                parent[uni_prop[1]] = content.get(prop)
+                            else:
+                                item_data[uni_prop] = content.get(prop)
+
+                    data[key].append(item_data)
+
+        return data
+
+
     def _filter_link_tag_data(self, source, soup, data, url):
         """This method filters the web page content for link tags that match patterns given in the ``FILTER_MAPS``
 
@@ -239,10 +299,13 @@ class Lassie(object):
         html = soup.find_all('link', {link['key']: link['pattern']})
 
         for line in html:
-            data['images'].append({
-                'src': urljoin(url, line.get('href')),
-                'type': link['type'],
-            })
+            if source == 'favicon':
+                data['images'].append({
+                    'src': urljoin(url, line.get('href')),
+                    'type': link['type'],
+                })
+            elif source == 'embeddable':
+                data['embeddable'] = True if html else False
 
         return data
 
