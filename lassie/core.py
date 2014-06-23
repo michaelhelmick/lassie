@@ -8,10 +8,12 @@ This module contains a Lassie object to maintain settings across lassie.
 
 """
 
+from os.path import basename
+
 from bs4 import BeautifulSoup
 import requests
 
-from .compat import urljoin
+from .compat import urljoin, urlparse
 from .exceptions import LassieError
 from .filters import FILTER_MAPS
 from .utils import clean_text, convert_to_int, normalize_locale
@@ -21,6 +23,10 @@ REQUEST_OPTS = {
     'client': ('cert', 'headers', 'hooks', 'max_redirects', 'proxies'),
     'request': ('timeout', 'allow_redirects', 'stream', 'verify'),
 }
+
+IMAGE_MIMETYPES = [
+    'image/jpeg', 'image/gif', 'image/bmp', 'image/png'
+]
 
 
 def merge_settings(fetch_setting, class_setting):
@@ -37,7 +43,7 @@ def merge_settings(fetch_setting, class_setting):
 class Lassie(object):
     __attrs__ = [
         'open_graph', 'twitter_card', 'touch_icon', 'favicon',
-        'all_images', 'parser', '_retreive_content', 'client'
+        'all_images', 'parser', '_retrieve_content', 'client'
     ]
 
     def __init__(self):
@@ -48,6 +54,7 @@ class Lassie(object):
         self.favicon = True
         self.all_images = False
         self.parser = 'html5lib'
+        self.handle_file_content = False
         self._request_opts = {}
         self.client = requests.Session()
 
@@ -68,7 +75,7 @@ class Lassie(object):
         return '<Lassie [parser: %s]>' % (self.parser)
 
     def fetch(self, url, open_graph=None, twitter_card=None, touch_icon=None,
-              favicon=None, all_images=None, parser=None):
+              favicon=None, all_images=None, parser=None, handle_file_content=None):
         """Retrieves content from the specified url, parses it, and returns
         a beautifully crafted dictionary of important information about that
         web page.
@@ -91,6 +98,8 @@ class Lassie(object):
         :type all_images: bool
         :param parser: (optional) String reference for the parser that BeautifulSoup will use
         :type parser: string
+        :param handle_file_content: (optional) If ``True``, lassie will return a generic response when a file is fetched. Default: False
+        :type handle_file_content: bool
 
         """
 
@@ -101,52 +110,80 @@ class Lassie(object):
         favicon = merge_settings(favicon, self.favicon)
         all_images = merge_settings(all_images, self.all_images)
         parser = merge_settings(parser, self.parser)
-
-        html = self._retreive_content(url)
-        if not html:
-            raise LassieError('There was no content to parse.')
-
-        soup = BeautifulSoup(clean_text(html), parser)
+        handle_file_content = merge_settings(handle_file_content, self.handle_file_content)
 
         data = {
             'images': [],
             'videos': [],
         }
 
-        if open_graph:
-            data.update(self._filter_meta_data('open_graph', soup, data, url))
+        has_file_content = False
+        if handle_file_content:
+            headers = self._retrieve_headers(url)
+            has_file_content = not 'text/html' in headers['Content-Type']
 
-        if twitter_card:
-            data.update(self._filter_meta_data('twitter_card', soup, data))
+        if has_file_content:
+            has_image_content = headers['Content-Type'] in IMAGE_MIMETYPES
+            if has_image_content:
+                parsed_url = urlparse(url)
+                data['title'] = basename(parsed_url.path.lstrip('/'))  # TODO: if the url doesn't have an extension, maybe we should match it up to the mimetype and append an ext?
+                data['url'] = url
+                data['images'].append({
+                    'type': 'body_image',
+                    'src': url,
+                })
+        else:
+            html = self._retrieve_content(url)
+            if not html:
+                raise LassieError('There was no content to parse.')
 
-        data.update(self._filter_meta_data('generic', soup, data))
+            soup = BeautifulSoup(clean_text(html), parser)
 
-        if touch_icon:
-            data.update(self._filter_link_tag_data('touch_icon', soup, data, url))
+            if open_graph:
+                data.update(self._filter_meta_data('open_graph', soup, data, url))
 
-        if favicon:
-            data.update(self._filter_link_tag_data('favicon', soup, data, url))
+            if twitter_card:
+                data.update(self._filter_meta_data('twitter_card', soup, data))
 
-        if all_images:
-            # Maybe filter out 1x1, no "good" way to do this if image doesn't supply width/height
-            data.update(self._find_all_images(soup, data, url))
+            data.update(self._filter_meta_data('generic', soup, data))
 
-        # TODO: Find a good place for setting url, title and locale
-        lang = soup.html.get('lang') if soup.html.get('lang') else soup.html.get('xml:lang')
-        if lang and (not 'locale' in data):
-            locale = normalize_locale(lang)
-            if locale:
-                data['locale'] = locale
+            if touch_icon:
+                data.update(self._filter_link_tag_data('touch_icon', soup, data, url))
 
-        if not 'url' in data:
-            data['url'] = url
+            if favicon:
+                data.update(self._filter_link_tag_data('favicon', soup, data, url))
 
-        if not 'title' in data and hasattr(soup.title, 'string'):
-            data['title'] = soup.title.string
+            if all_images:
+                # Maybe filter out 1x1, no "good" way to do this if image doesn't supply width/height
+                data.update(self._find_all_images(soup, data, url))
+
+            # TODO: Find a good place for setting url, title and locale
+            lang = soup.html.get('lang') if soup.html.get('lang') else soup.html.get('xml:lang')
+            if lang and (not 'locale' in data):
+                locale = normalize_locale(lang)
+                if locale:
+                    data['locale'] = locale
+
+            if not 'url' in data:
+                data['url'] = url
+
+            if not 'title' in data and hasattr(soup.title, 'string'):
+                data['title'] = soup.title.string
 
         return data
 
-    def _retreive_content(self, url):  # pragma: no cover
+    def _retrieve_headers(self, url):  # pragma: no cover
+        request_kwargs = {}
+        for k, v in self._request_opts.items():
+            if k in REQUEST_OPTS['request']:
+                # Set request specific kwarg
+                request_kwargs[k] = v
+
+        response = self.client.head(url, **request_kwargs)
+
+        return response.headers
+
+    def _retrieve_content(self, url):  # pragma: no cover
         try:
             request_kwargs = {}
             for k, v in self._request_opts.items():
@@ -157,8 +194,8 @@ class Lassie(object):
             response = self.client.get(url, **request_kwargs)
         except requests.exceptions.RequestException as e:
             raise LassieError(e)
-        else:
-            return response.text
+
+        return response.text
 
     def _filter_meta_data(self, source, soup, data, url=None):
         """This method filters the web page content for meta tags that match patterns given in the ``FILTER_MAPS``

@@ -156,3 +156,35 @@ Maybe you want to set a request timeout, here's another example:
 
     # If the response takes longer than 10 seconds this request will fail
     l.fetch('http://google.com')
+
+
+Playing Nice with non-HTML Files
+--------------------------------
+
+Sometimes, you may want to grab information about an image or other type of file. Although only images are supported, you can retrieve a nicely structured ``dict``
+
+Pass ``handle_file_content=True`` to ``lassie.fetch`` or set it on a ``Lassie`` instance
+
+.. code-block:: python
+
+    >>> from lassie import Lassie
+
+    >>> lassie.fetch('https://camo.githubusercontent.com/d19b279de191489445d8cfd39faf93e19ca2df14/68747470733a2f2f692e696d6775722e636f6d2f5172764e6641582e676966', handle_file_content=True)
+    {
+        'title': '68747470733a2f2f692e696d6775722e636f6d2f5172764e6641582e676966',
+        'videos': [],
+        'url': 'https://camo.githubusercontent.com/d19b279de191489445d8cfd39faf93e19ca2df14/68747470733a2f2f692e696d6775722e636f6d2f5172764e6641582e676966',
+        'images': [{
+            'src': 'https://camo.githubusercontent.com/d19b279de191489445d8cfd39faf93e19ca2df14/68747470733a2f2f692e696d6775722e636f6d2f5172764e6641582e676966'
+        }]
+    }
+
+    >>> lassie.fetch('http://2.bp.blogspot.com/-vzGgFFtW-VY/Tz-eozaHw3I/AAAAAAAAM3k/OMvxpFYr23s/s1600/The-best-top-desktop-cat-wallpapers-10.jpg', handle_file_content=True)
+    {
+        'title': 'The-best-top-desktop-cat-wallpapers-10.jpg',
+        'images': [{
+            'src': 'http://2.bp.blogspot.com/-vzGgFFtW-VY/Tz-eozaHw3I/AAAAAAAAM3k/OMvxpFYr23s/s1600/The-best-top-desktop-cat-wallpapers-10.jpg'
+        }],
+        'videos': [],
+        'url': 'http://2.bp.blogspot.com/-vzGgFFtW-VY/Tz-eozaHw3I/AAAAAAAAM3k/OMvxpFYr23s/s1600/The-best-top-desktop-cat-wallpapers-10.jpg'
+    }

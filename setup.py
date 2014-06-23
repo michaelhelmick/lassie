@@ -8,7 +8,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-__version__ = '0.4.0'
+__version__ = '0.5.0'
 
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload')
@@ -23,7 +23,7 @@ setup(
     name='lassie',
     version=__version__,
     install_requires=[
-        'requests==2.0.0',
+        'requests==2.3.0',
         'beautifulsoup4==4.3.1',
         'html5lib==1.0b3'
     ],
