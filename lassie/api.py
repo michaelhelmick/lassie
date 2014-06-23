@@ -34,6 +34,8 @@ def fetch(url, **kwargs):
     :type all_images: bool
     :param parser: (optional) String reference for the parser that BeautifulSoup will use
     :type parser: string
+    :param handle_file_content: (optional) If ``True``, lassie will return a generic response when a file is fetched. Default: False
+    :type handle_file_content: bool
 
     """
     l = Lassie()
