@@ -175,6 +175,7 @@ Pass ``handle_file_content=True`` to ``lassie.fetch`` or set it on a ``Lassie`` 
         'videos': [],
         'url': 'https://camo.githubusercontent.com/d19b279de191489445d8cfd39faf93e19ca2df14/68747470733a2f2f692e696d6775722e636f6d2f5172764e6641582e676966',
         'images': [{
+            'type': 'body_image',
             'src': 'https://camo.githubusercontent.com/d19b279de191489445d8cfd39faf93e19ca2df14/68747470733a2f2f692e696d6775722e636f6d2f5172764e6641582e676966'
         }]
     }
@@ -183,6 +184,7 @@ Pass ``handle_file_content=True`` to ``lassie.fetch`` or set it on a ``Lassie`` 
     {
         'title': 'The-best-top-desktop-cat-wallpapers-10.jpg',
         'images': [{
+            'type': 'body_image',
             'src': 'http://2.bp.blogspot.com/-vzGgFFtW-VY/Tz-eozaHw3I/AAAAAAAAM3k/OMvxpFYr23s/s1600/The-best-top-desktop-cat-wallpapers-10.jpg'
         }],
         'videos': [],

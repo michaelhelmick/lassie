@@ -12,4 +12,5 @@ Development Lead
 Patches and Suggestions
 -----------------------
 
-- `Ramiro Gómez <https://github.com/yaph>`_ - Made image URLs absolute, image width/heights are more lenient 
+- `Ramiro Gómez <https://github.com/yaph>`_ - Made image URLs absolute, image width/heights are more lenient
+- `jay754 <https://github.com/jay754>`_ - Updated import in setup.py

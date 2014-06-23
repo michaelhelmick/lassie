@@ -3,6 +3,12 @@
 History
 -------
 
+0.5.0 (2014-06-23)
+++++++++++++++++++
+- Added ability to `fetch` links that are image files (jpg, gif, png, bmp)
+- Renamed `_retreive_content` to `_retrieve_content` because I evidently don't know how to spell correctly
+
+
 0.4.0 (2013-09-30)
 ++++++++++++++++++
 - Updated `requests` and `beautifulsoup4` library versions
