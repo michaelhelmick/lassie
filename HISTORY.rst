@@ -3,6 +3,11 @@
 History
 -------
 
+0.5.1 (2014-08-05)
+++++++++++++++++++
+- Fix issue where headers didn't always have 'Content-Type' key
+
+
 0.5.0 (2014-06-23)
 ++++++++++++++++++
 - Added ability to `fetch` links that are image files (jpg, gif, png, bmp)

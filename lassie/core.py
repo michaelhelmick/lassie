@@ -118,12 +118,14 @@ class Lassie(object):
         }
 
         has_file_content = False
+        content_type = None
         if handle_file_content:
             headers = self._retrieve_headers(url)
-            has_file_content = not 'text/html' in headers['Content-Type']
+            content_type = headers.get('Content-Type')
+            has_file_content = content_type and not 'text/html' in content_type
 
-        if has_file_content:
-            has_image_content = headers['Content-Type'] in IMAGE_MIMETYPES
+        if has_file_content and content_type:
+            has_image_content = content_type in IMAGE_MIMETYPES
             if has_image_content:
                 parsed_url = urlparse(url)
                 data['title'] = basename(parsed_url.path.lstrip('/'))  # TODO: if the url doesn't have an extension, maybe we should match it up to the mimetype and append an ext?
