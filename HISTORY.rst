@@ -3,6 +3,11 @@
 History
 -------
 
+0.5.2 (2015-04-15)
+++++++++++++++++++
+- Updated `requests` and `beautifulsoup4` library versions
+
+
 0.5.1 (2014-08-05)
 ++++++++++++++++++
 - Fix issue where headers didn't always have 'Content-Type' key
