@@ -3,7 +3,7 @@
 History
 -------
 
-0.5.2 (2015-04-15)
+0.5.2 (2015-04-16)
 ++++++++++++++++++
 - Updated `requests` and `beautifulsoup4` library versions
 
