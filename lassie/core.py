@@ -13,7 +13,7 @@ from os.path import basename
 from bs4 import BeautifulSoup
 import requests
 
-from .compat import urljoin, urlparse
+from .compat import urljoin, urlparse, str
 from .exceptions import LassieError
 from .filters import FILTER_MAPS
 from .utils import clean_text, convert_to_int, normalize_locale
@@ -240,7 +240,10 @@ class Lassie(object):
                         data['locale'] = locale
 
                 if prop == 'keywords':
-                    value = [v.strip() for v in value.split(',')]
+                    if isinstance(value, str):
+                        value = [v.strip() for v in value.split(',')]
+                    else:
+                        value = []
 
                 if image_prop and prop.startswith(image_prop) and value:
                     # og:image URLs can be relative

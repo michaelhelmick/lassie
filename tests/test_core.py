@@ -109,3 +109,10 @@ class LassieCoreTestCase(LassieBaseTestCase):
 
         self.assertTrue('bad_key' not in l.request_opts)
         self.assertTrue('headers' in l.request_opts)
+
+    def test_core_bad_keywords(self):
+        url = 'http://lassie.it/core/bad_keywords.html'
+
+        l = Lassie()
+        data = l.fetch(url)
+        self.assertEqual(data.get('keywords'), [])
