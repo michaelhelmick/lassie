@@ -3,6 +3,11 @@
 History
 -------
 
+0.5.3 (2015-07-02)
+++++++++++++++++++
+- Handle when a website doesn't set a value on the "keywords" meta tag
+
+
 0.5.2 (2015-04-16)
 ++++++++++++++++++
 - Updated `requests` and `beautifulsoup4` library versions
