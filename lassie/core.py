@@ -142,22 +142,22 @@ class Lassie(object):
             soup = BeautifulSoup(clean_text(html), parser)
 
             if open_graph:
-                data.update(self._filter_meta_data('open_graph', soup, data, url))
+                self._filter_meta_data('open_graph', soup, data, url)
 
             if twitter_card:
-                data.update(self._filter_meta_data('twitter_card', soup, data))
+                self._filter_meta_data('twitter_card', soup, data)
 
-            data.update(self._filter_meta_data('generic', soup, data))
+            self._filter_meta_data('generic', soup, data)
 
             if touch_icon:
-                data.update(self._filter_link_tag_data('touch_icon', soup, data, url))
+                self._filter_link_tag_data('touch_icon', soup, data, url)
 
             if favicon:
-                data.update(self._filter_link_tag_data('favicon', soup, data, url))
+                self._filter_link_tag_data('favicon', soup, data, url)
 
             if all_images:
                 # Maybe filter out 1x1, no "good" way to do this if image doesn't supply width/height
-                data.update(self._find_all_images(soup, data, url))
+                self._find_all_images(soup, data, url)
 
             # TODO: Find a good place for setting url, title and locale
             lang = soup.html.get('lang') if soup.html.get('lang') else soup.html.get('xml:lang')
@@ -261,8 +261,6 @@ class Lassie(object):
         if video:
             data['videos'].append(video)
 
-        return data
-
     def _filter_link_tag_data(self, source, soup, data, url):
         """This method filters the web page content for link tags that match patterns given in the ``FILTER_MAPS``
 
@@ -285,8 +283,6 @@ class Lassie(object):
                 'src': urljoin(url, line.get('href')),
                 'type': link['type'],
             })
-
-        return data
 
     def _find_all_images(self, soup, data, url):
         """This method finds all images in the web page content
@@ -316,5 +312,3 @@ class Lassie(object):
                 img['height'] = height
 
             data['images'].append(img)
-
-        return data
