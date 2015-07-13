@@ -33,11 +33,8 @@ def merge_settings(fetch_setting, class_setting):
     """Merge settings for ``fetch``, method params have priority."""
     if fetch_setting is None:
         return class_setting
-
-    if class_setting is None:
+    else:
         return fetch_setting
-
-    return fetch_setting
 
 
 class Lassie(object):
