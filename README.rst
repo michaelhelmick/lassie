@@ -1,14 +1,17 @@
 Lassie
 ======
 
-.. image:: https://badge.fury.io/py/lassie.png
-        :target: http://badge.fury.io/py/lassie
-.. image:: https://travis-ci.org/michaelhelmick/lassie.png?branch=master
-        :target: https://travis-ci.org/michaelhelmick/lassie
-.. image:: https://pypip.in/d/lassie/badge.png
-        :target: https://crate.io/packages/lassie/
-.. image:: https://coveralls.io/repos/michaelhelmick/lassie/badge.png?branch=master
-        :target: https://coveralls.io/r/michaelhelmick/lassie?branch=master
+.. image:: https://img.shields.io/pypi/v/lassie.svg?style=flat-square
+  :target: https://pypi.python.org/pypi/lassie 
+
+.. image:: https://img.shields.io/pypi/dw/lassie.svg?style=flat-square
+  :target: https://pypi.python.org/pypi/lassie 
+ 
+.. image:: https://img.shields.io/travis/michaelhelmick/lassie.svg?style=flat-square
+  :target: https://travis-ci.org/michaelhelmick/lassie 
+
+.. image:: https://img.shields.io/coveralls/michaelhelmick/lassie/master.svg?style=flat-square
+  :target: https://coveralls.io/r/michaelhelmick/lassie?branch=master 
 
 Lassie is a Python library for retrieving basic content from websites.
 
