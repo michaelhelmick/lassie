@@ -23,10 +23,15 @@ SOCIAL_MAPS = {
                 'og:locale': 'locale',
 
                 'og:image': 'src',
+                'og:image:url': 'src',
+                'og:image:secure_url': 'secure_src',
                 'og:image:width': 'width',
                 'og:image:height': 'height',
+                'og:image:type': 'type',
 
                 'og:video': 'src',
+                'og:video:url': 'src',
+                'og:video:secure_url': 'secure_src',
                 'og:video:width': 'width',
                 'og:video:height': 'height',
                 'og:video:type': 'type',
