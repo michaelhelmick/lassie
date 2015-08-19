@@ -3,6 +3,12 @@
 History
 -------
 
+0.5.4 (2015-08-19)
+++++++++++++++++++
+- Support for secure url image and videos from Open Graph
+- Simplified `merge_settings` and data updating internally
+
+
 0.5.3 (2015-07-02)
 ++++++++++++++++++
 - Handle when a website doesn't set a value on the "keywords" meta tag
