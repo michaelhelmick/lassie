@@ -40,7 +40,8 @@ def merge_settings(fetch_setting, class_setting):
 class Lassie(object):
     __attrs__ = [
         'open_graph', 'twitter_card', 'touch_icon', 'favicon',
-        'all_images', 'parser', '_retrieve_content', 'client'
+        'canonical', 'all_images', 'parser', '_retrieve_content',
+        'client'
     ]
 
     def __init__(self):
@@ -49,6 +50,7 @@ class Lassie(object):
         self.twitter_card = True
         self.touch_icon = True
         self.favicon = True
+        self.canonical = False
         self.all_images = False
         self.parser = 'html5lib'
         self.handle_file_content = False
@@ -72,7 +74,8 @@ class Lassie(object):
         return '<Lassie [parser: %s]>' % (self.parser)
 
     def fetch(self, url, open_graph=None, twitter_card=None, touch_icon=None,
-              favicon=None, all_images=None, parser=None, handle_file_content=None):
+              favicon=None, all_images=None, parser=None, handle_file_content=None,
+              canonical=None):
         """Retrieves content from the specified url, parses it, and returns
         a beautifully crafted dictionary of important information about that
         web page.
@@ -91,6 +94,8 @@ class Lassie(object):
         :type touch_icon: bool
         :param favicon: (optional) If ``True``, retrieves any favicon images and includes them in the response ``images`` array
         :type favicon: bool
+        :param canonical: (optional) If ``True``, retrieves canonical url from meta tags. Default: False
+        :type canonical: bool
         :param all_images: (optional) If ``True``, retrieves images inside web pages body and includes them in the response ``images`` array. Default: False
         :type all_images: bool
         :param parser: (optional) String reference for the parser that BeautifulSoup will use
@@ -105,6 +110,7 @@ class Lassie(object):
         twitter_card = merge_settings(twitter_card, self.twitter_card)
         touch_icon = merge_settings(touch_icon, self.touch_icon)
         favicon = merge_settings(favicon, self.favicon)
+        canonical = merge_settings(canonical, self.canonical)
         all_images = merge_settings(all_images, self.all_images)
         parser = merge_settings(parser, self.parser)
         handle_file_content = merge_settings(handle_file_content, self.handle_file_content)
@@ -151,6 +157,9 @@ class Lassie(object):
 
             if favicon:
                 self._filter_link_tag_data('favicon', soup, data, url)
+
+            if canonical:
+                self._filter_link_tag_data('canonical', soup, data, url)
 
             if all_images:
                 # Maybe filter out 1x1, no "good" way to do this if image doesn't supply width/height
@@ -275,11 +284,15 @@ class Lassie(object):
 
         html = soup.find_all('link', {link['key']: link['pattern']})
 
-        for line in html:
-            data['images'].append({
-                'src': urljoin(url, line.get('href')),
-                'type': link['type'],
-            })
+        if link['type'] == 'url':
+            for line in html:
+                data['url'] = line.get('href')
+        else:
+            for line in html:
+                data['images'].append({
+                    'src': urljoin(url, line.get('href')),
+                    'type': link['type'],
+                })
 
     def _find_all_images(self, soup, data, url):
         """This method finds all images in the web page content

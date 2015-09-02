@@ -32,5 +32,10 @@ GENERIC_MAPS = {
             'key': 'rel',
             'type': str('favicon'),
         },
+        'canonical': {
+            'pattern': 'canonical',
+            'key': 'rel',
+            'type': 'url'
+        }
     },
 }
