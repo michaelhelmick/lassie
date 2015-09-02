@@ -13,3 +13,4 @@ Patches and Suggestions
 - `Ramiro Gómez <https://github.com/yaph>`_ - Made image URLs absolute, image width/heights are more lenient
 - `jay754 <https://github.com/jay754>`_ - Updated import in setup.py
 - `Mark Beacom <https://github.com/mbeacom>`_ - Update requirements in setup.py
+- `John Hobbs <https://github.com/jmhobbs>`_ - Support for canonical link tag

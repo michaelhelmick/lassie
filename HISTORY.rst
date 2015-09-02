@@ -3,7 +3,7 @@
 History
 -------
 
-0.5.4 (2015-08-19)
+0.6.0 (2015-08-19)
 ++++++++++++++++++
 - Support for secure url image and videos from Open Graph
 - Simplified `merge_settings` and data updating internally
