@@ -3,6 +3,12 @@
 History
 -------
 
+0.6.1 (2015-10-30)
+++++++++++++++++++
+- Catch and raise `LassieError` on HEAD requests when `handle_file_content` is passed to the Lassie API
+- Pinned `requests` library to version 2.8.0
+
+
 0.6.0 (2015-08-19)
 ++++++++++++++++++
 - Support for secure url image and videos from Open Graph
