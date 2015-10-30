@@ -187,7 +187,10 @@ class Lassie(object):
                 # Set request specific kwarg
                 request_kwargs[k] = v
 
-        response = self.client.head(url, **request_kwargs)
+        try:
+            response = self.client.head(url, **request_kwargs)
+        except requests.exceptions.RequestException as e:
+            raise LassieError(e)
 
         return response.headers
 
