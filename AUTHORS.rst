@@ -14,3 +14,4 @@ Patches and Suggestions
 - `jay754 <https://github.com/jay754>`_ - Updated import in setup.py
 - `Mark Beacom <https://github.com/mbeacom>`_ - Update requirements in setup.py
 - `John Hobbs <https://github.com/jmhobbs>`_ - Support for canonical link tag
+- `Benjamin Kampmann <https://github.com/ligthyear>`_ - Updating requirements, fixing Python 3.5 support
