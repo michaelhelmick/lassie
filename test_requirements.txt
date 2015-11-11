@@ -3,4 +3,4 @@ html5lib==1.0b3
 python-coveralls==2.1.0
 nose-cov==1.6
 mock==1.0.1
-beautifulsoup4==4.3.2
+beautifulsoup4==4.4.1
