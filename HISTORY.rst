@@ -3,6 +3,13 @@
 History
 -------
 
+0.6.2 (2015-11-11)
+++++++++++++++++++
+- Pinned `requests` library to version 2.8.1
+- Pinned `beautifulsoup4` library to version 4.4.1
+- Add Python 3.5 to Travis CI build matrix (officially support 3.5)
+
+
 0.6.1 (2015-10-30)
 ++++++++++++++++++
 - Catch and raise `LassieError` on HEAD requests when `handle_file_content` is passed to the Lassie API
