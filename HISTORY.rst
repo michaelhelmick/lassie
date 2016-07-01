@@ -3,6 +3,10 @@
 History
 -------
 
+0.7.0 (2016-07-01)
+++++++++++++++++++
+- Add `status_code` to response dictionary
+
 0.6.2 (2015-11-11)
 ++++++++++++++++++
 - Pinned `requests` library to version 2.8.1

@@ -13,7 +13,9 @@ def _mock_retrieve_content(mock, url):
     content = _file.read()
     _file.close()
 
-    return content
+    status_code = 200
+
+    return content, status_code
 
 
 def _mock_retrieve_headers(mock, url):

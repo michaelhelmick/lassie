@@ -138,9 +138,11 @@ class Lassie(object):
                     'src': url,
                 })
         else:
-            html = self._retrieve_content(url)
+            html, status_code = self._retrieve_content(url)
             if not html:
                 raise LassieError('There was no content to parse.')
+
+            data['status_code'] = status_code
 
             soup = BeautifulSoup(clean_text(html), parser)
 
@@ -206,7 +208,7 @@ class Lassie(object):
         except requests.exceptions.RequestException as e:
             raise LassieError(e)
 
-        return response.text
+        return response.text, response.status_code
 
     def _filter_meta_data(self, source, soup, data, url=None):
         """This method filters the web page content for meta tags that match patterns given in the ``FILTER_MAPS``
