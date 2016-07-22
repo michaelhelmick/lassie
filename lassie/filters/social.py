@@ -21,6 +21,7 @@ SOCIAL_MAPS = {
                 'og:title': 'title',
                 'og:description': 'description',
                 'og:locale': 'locale',
+                'og:site_name': 'site_name',
 
                 'og:image': 'src',
                 'og:image:url': 'src',
