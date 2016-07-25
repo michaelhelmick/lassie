@@ -12,6 +12,7 @@ class LassieOpenGraphTestCase(LassieBaseTestCase):
         self.assertEqual(data['title'], 'Lassie Open Graph All Properies Test')
         self.assertEqual(data['description'], 'Just a test template with OG data!')
         self.assertEqual(data['locale'], 'en_US')
+        self.assertEqual(data['site_name'], 'Lassie')
 
         self.assertEqual(len(data['images']), 1)
         image = data['images'][0]
