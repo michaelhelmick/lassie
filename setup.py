@@ -8,7 +8,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-__version__ = '0.7.0'
+__version__ = '0.7.1'
 
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload')

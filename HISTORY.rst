@@ -3,9 +3,15 @@
 History
 -------
 
+0.7.1 (2016-07-27)
+++++++++++++++++++
+- Add support for open graph `site_name`
+
+
 0.7.0 (2016-07-01)
 ++++++++++++++++++
 - Add `status_code` to response dictionary
+
 
 0.6.2 (2015-11-11)
 ++++++++++++++++++
