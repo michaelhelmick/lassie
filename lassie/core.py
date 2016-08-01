@@ -123,7 +123,7 @@ class Lassie(object):
         has_file_content = False
         content_type = None
         if handle_file_content:
-            headers = self._retrieve_headers(url)
+            headers, status_code = self._retrieve_headers(url)
             content_type = headers.get('Content-Type')
             has_file_content = content_type and not 'text/html' in content_type
 
@@ -141,8 +141,6 @@ class Lassie(object):
             html, status_code = self._retrieve_content(url)
             if not html:
                 raise LassieError('There was no content to parse.')
-
-            data['status_code'] = status_code
 
             soup = BeautifulSoup(clean_text(html), parser)
 
@@ -180,6 +178,8 @@ class Lassie(object):
             if not 'title' in data and hasattr(soup.title, 'string'):
                 data['title'] = soup.title.string
 
+        data['status_code'] = status_code
+
         return data
 
     def _retrieve_headers(self, url):  # pragma: no cover
@@ -191,10 +191,11 @@ class Lassie(object):
 
         try:
             response = self.client.head(url, **request_kwargs)
+            status_code = response.status_code
         except requests.exceptions.RequestException as e:
             raise LassieError(e)
 
-        return response.headers
+        return response.headers, status_code
 
     def _retrieve_content(self, url):  # pragma: no cover
         try:

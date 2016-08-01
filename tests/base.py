@@ -25,7 +25,9 @@ def _mock_retrieve_headers(mock, url):
         'Content-Type': mimetypes.guess_type(filename)[0] or 'application/octet-stream'
     }
 
-    return headers
+    status_code = 200
+
+    return headers, status_code
 
 
 class LassieBaseTestCase(unittest.TestCase):
