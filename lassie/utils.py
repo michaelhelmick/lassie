@@ -36,7 +36,9 @@ def convert_to_int(value):
         return None
 
     # Apart from numbers also accept values that end with px
-    value = value.strip(' px')
+    if isinstance(value, str):
+        value = value.strip(' px')
+
     try:
         return int(value)
     except (TypeError, ValueError):
