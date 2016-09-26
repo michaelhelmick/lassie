@@ -8,16 +8,16 @@ This module contains a Lassie object to maintain settings across lassie.
 
 """
 
+import json
 from os.path import basename
 
-from bs4 import BeautifulSoup
 import requests
+from bs4 import BeautifulSoup
 
-from .compat import urljoin, urlparse, str
+from .compat import str, urljoin, urlparse
 from .exceptions import LassieError
 from .filters import FILTER_MAPS
-from .utils import clean_text, convert_to_int, normalize_locale
-
+from .utils import clean_text, convert_to_int, normalize_image_data, normalize_locale
 
 REQUEST_OPTS = {
     'client': ('cert', 'headers', 'hooks', 'max_redirects', 'proxies'),
@@ -143,6 +143,8 @@ class Lassie(object):
                 raise LassieError('There was no content to parse.')
 
             soup = BeautifulSoup(clean_text(html), parser)
+
+            self._filter_amp_data(soup, data, url, all_images)
 
             if open_graph:
                 self._filter_meta_data('open_graph', soup, data, url)
@@ -300,6 +302,36 @@ class Lassie(object):
                     'type': link['type'],
                 })
 
+    def _filter_amp_data(self, soup, data, url, all_images):
+        amp_scripts = soup.find_all('script', {'type': 'application/ld+json'})
+        for script in amp_scripts:
+            content = script.contents
+            _json = None
+            try:
+                _json = json.loads(content[0])
+            except (IndexError, ValueError):
+                continue
+
+            if _json:
+                image = _json.get('image')
+
+                data['title'] = _json.get('headline', '')
+                data['title'] = _json.get('headline', '')
+
+                if image:
+                    data['images'].append({
+                        'src': urljoin(url, image.get('url')),
+                        'width': convert_to_int(image.get('width')),
+                        'height': convert_to_int(image.get('height')),
+                    })
+
+        if all_images:
+            amp_imgs = soup.find_all('amp-img')
+            for image in amp_imgs:
+                item = normalize_image_data(image, url)
+
+                data['images'].append(item)
+
     def _find_all_images(self, soup, data, url):
         """This method finds all images in the web page content
 
@@ -309,22 +341,8 @@ class Lassie(object):
         :type data: (dict)
 
         """
-        all_images = soup.findAll('img')
+        all_images = soup.find_all('img')
         for image in all_images:
-            # Create image list then remove duplicate images?
-            img = {
-                'src': urljoin(url, image.get('src')),
-                'alt': image.get('alt', ''),
-                'type': u'body_image',
-            }
+            item = normalize_image_data(image, url)
 
-            # Only include width and height if included as an attribute of the element
-            width = convert_to_int(image.get('width'))
-            if width:
-                img['width'] = width
-
-            height = convert_to_int(image.get('height'))
-            if height:
-                img['height'] = height
-
-            data['images'].append(img)
+            data['images'].append(item)
