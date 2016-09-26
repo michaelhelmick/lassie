@@ -3,6 +3,12 @@
 History
 -------
 
+0.8.1 (2016-09-26)
+++++++++++++++++++
+- Add support for AMP "description" attribute
+- Fix issue where an error would be thrown if width/height of an image weren't strings
+- Fix duplicate AMP title request, should have been url
+
 0.8.0 (2016-09-26)
 ++++++++++++++++++
 - Add support for links that use AMP
