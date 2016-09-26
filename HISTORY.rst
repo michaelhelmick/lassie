@@ -3,6 +3,10 @@
 History
 -------
 
+0.8.0 (2016-09-26)
+++++++++++++++++++
+- Add support for links that use AMP
+
 0.7.2 (2016-08-01)
 ++++++++++++++++++
 - Add `status_code` to response dictionary (for "file-like" responses, as well)
