@@ -316,7 +316,7 @@ class Lassie(object):
                 image = _json.get('image')
 
                 data['title'] = _json.get('headline', '')
-                data['title'] = _json.get('headline', '')
+                data['url'] = _json.get('url', '')
 
                 if image:
                     data['images'].append({
