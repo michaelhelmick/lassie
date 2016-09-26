@@ -8,10 +8,10 @@ This module contains the set of helper functions executed by Lassie methods.
 
 """
 
-from .compat import str
-
 import locale
 import re
+
+from .compat import str, urljoin
 
 CLEANER = re.compile(r'[\r\n\t]')
 RE_INT = re.compile(r'\d+')
@@ -54,3 +54,21 @@ def normalize_locale(value):
             pass
     return None
 
+def normalize_image_data(data, url):
+    # Create image list then remove duplicate images?
+    img = {
+        'src': urljoin(url, data.get('src')),
+        'alt': data.get('alt', ''),
+        'type': u'body_image',
+    }
+
+    # Only include width and height if included as an attribute of the element
+    width = convert_to_int(data.get('width'))
+    if width:
+        img['width'] = width
+
+    height = convert_to_int(data.get('height'))
+    if height:
+        img['height'] = height
+
+    return img
