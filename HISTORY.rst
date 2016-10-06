@@ -3,6 +3,10 @@
 History
 -------
 
+0.8.2 (2016-09-26)
+++++++++++++++++++
+- Fix issue where AMP images could be images and not objects
+
 0.8.1 (2016-09-26)
 ++++++++++++++++++
 - Add support for AMP "description" attribute
