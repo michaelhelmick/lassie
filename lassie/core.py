@@ -314,17 +314,21 @@ class Lassie(object):
 
             if _json:
                 image = _json.get('image')
+                if image:
+                    if isinstance(image, str):
+                        data['images'].append({
+                            'src': urljoin(url, image),
+                        })
+                    elif isinstance(image, object):
+                        data['images'].append({
+                            'src': urljoin(url, image.get('url')),
+                            'width': convert_to_int(image.get('width')),
+                            'height': convert_to_int(image.get('height')),
+                        })
 
                 data['title'] = _json.get('headline', '')
                 data['url'] = _json.get('url', '')
                 data['description'] = _json.get('description', '')
-
-                if image:
-                    data['images'].append({
-                        'src': urljoin(url, image.get('url')),
-                        'width': convert_to_int(image.get('width')),
-                        'height': convert_to_int(image.get('height')),
-                    })
 
         if all_images:
             amp_imgs = soup.find_all('amp-img')
