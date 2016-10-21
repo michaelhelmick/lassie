@@ -14,7 +14,7 @@ Lassie is a Python library for retrieving basic content from websites.
 
 """
 
-__version__ = '0.8.2'
+__version__ = '0.8.3'
 
 from .api import fetch
 from .core import Lassie
