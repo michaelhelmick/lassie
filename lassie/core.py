@@ -235,8 +235,9 @@ class Lassie(object):
         for line in html:
             prop = line.get(meta['key'])
             value = line.get('content')
+            _prop = meta_map.get(prop)
 
-            if prop in meta_map and not meta_map[prop] in data:
+            if prop in meta_map and _prop and not data.get(_prop):
                 # this could be bad in cases where any values that the property
                 # is mapped up to (i.e. "src", "type", etc) are found in ``data``
                 # TODO: Figure out a smoother way to prevent conflicts ^^^^^^^^
