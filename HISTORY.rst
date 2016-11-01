@@ -3,6 +3,10 @@
 History
 -------
 
+0.8.4 (2016-11-01)
+++++++++++++++++++
+- Fix issue where AMP images could be lists inside an object
+
 0.8.3 (2016-10-21)
 ++++++++++++++++++
 - Fix issue where some keys returned (i.e. description) would not be retrieved if the key existed with an empty value already
