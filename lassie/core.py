@@ -321,11 +321,19 @@ class Lassie(object):
                             'src': urljoin(url, image),
                         })
                     elif isinstance(image, object):
-                        data['images'].append({
-                            'src': urljoin(url, image.get('url')),
-                            'width': convert_to_int(image.get('width')),
-                            'height': convert_to_int(image.get('height')),
-                        })
+                        if image.get('@list'):
+                            for _image in image.get('@list'):
+                                data['images'].append({
+                                    'src': urljoin(url, _image.get('url')),
+                                    'width': convert_to_int(_image.get('width')),
+                                    'height': convert_to_int(_image.get('height')),
+                                })
+                        else:
+                            data['images'].append({
+                                'src': urljoin(url, image.get('url')),
+                                'width': convert_to_int(image.get('width')),
+                                'height': convert_to_int(image.get('height')),
+                            })
 
                 data['title'] = _json.get('headline', '')
                 data['url'] = _json.get('url', '')
