@@ -3,6 +3,11 @@
 History
 -------
 
+0.8.5 (2016-11-03)
+++++++++++++++++++
+- Handle AMP data that is contained in a list
+- Retrieve videos and thumbnails (as images) from AMP VideoObjects
+
 0.8.4 (2016-11-01)
 ++++++++++++++++++
 - Fix issue where AMP images could be lists inside an object
