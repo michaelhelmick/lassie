@@ -344,6 +344,38 @@ class Lassie(object):
                                     'height': convert_to_int(image.get('height')),
                                 })
 
+                    _type = _json.get('@type')
+                    if _type and _type == 'VideoObject':
+                        video_src = _json.get('embedUrl')
+
+                        if video_src:
+                            data['videos'].append({
+                                'src': video_src,
+                                'width': convert_to_int(_json.get('width')),
+                                'height': convert_to_int(_json.get('height')),
+                            })
+
+                        thumbnail = _json.get('thumbnail')
+                        if thumbnail:
+                            if isinstance(thumbnail, str):
+                                data['images'].append({
+                                    'src': urljoin(url, thumbnail),
+                                })
+                            elif isinstance(thumbnail, object):
+                                if thumbnail.get('@list'):
+                                    for _thumbnail in thumbnail.get('@list'):
+                                        data['images'].append({
+                                            'src': urljoin(url, _thumbnail.get('url')),
+                                            'width': convert_to_int(_thumbnail.get('width')),
+                                            'height': convert_to_int(_thumbnail.get('height')),
+                                        })
+                                else:
+                                    data['images'].append({
+                                        'src': urljoin(url, thumbnail.get('url')),
+                                        'width': convert_to_int(thumbnail.get('width')),
+                                        'height': convert_to_int(thumbnail.get('height')),
+                                    })
+
                     data['title'] = _json.get('headline', '')
                     data['url'] = _json.get('url', '')
                     data['description'] = _json.get('description', '')
