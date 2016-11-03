@@ -314,30 +314,39 @@ class Lassie(object):
                 continue
 
             if _json:
-                image = _json.get('image')
-                if image:
-                    if isinstance(image, str):
-                        data['images'].append({
-                            'src': urljoin(url, image),
-                        })
-                    elif isinstance(image, object):
-                        if image.get('@list'):
-                            for _image in image.get('@list'):
-                                data['images'].append({
-                                    'src': urljoin(url, _image.get('url')),
-                                    'width': convert_to_int(_image.get('width')),
-                                    'height': convert_to_int(_image.get('height')),
-                                })
-                        else:
-                            data['images'].append({
-                                'src': urljoin(url, image.get('url')),
-                                'width': convert_to_int(image.get('width')),
-                                'height': convert_to_int(image.get('height')),
-                            })
+                if isinstance(_json, list):
+                    try:
+                        # if the json is a list (see #46),
+                        # set _json to the first item which _should_ be an object
+                        _json = _json[0]
+                    except IndexError:  # pragma: no cover
+                        pass
 
-                data['title'] = _json.get('headline', '')
-                data['url'] = _json.get('url', '')
-                data['description'] = _json.get('description', '')
+                if isinstance(_json, object):
+                    image = _json.get('image')
+                    if image:
+                        if isinstance(image, str):
+                            data['images'].append({
+                                'src': urljoin(url, image),
+                            })
+                        elif isinstance(image, object):
+                            if image.get('@list'):
+                                for _image in image.get('@list'):
+                                    data['images'].append({
+                                        'src': urljoin(url, _image.get('url')),
+                                        'width': convert_to_int(_image.get('width')),
+                                        'height': convert_to_int(_image.get('height')),
+                                    })
+                            else:
+                                data['images'].append({
+                                    'src': urljoin(url, image.get('url')),
+                                    'width': convert_to_int(image.get('width')),
+                                    'height': convert_to_int(image.get('height')),
+                                })
+
+                    data['title'] = _json.get('headline', '')
+                    data['url'] = _json.get('url', '')
+                    data['description'] = _json.get('description', '')
 
         if all_images:
             amp_imgs = soup.find_all('amp-img')
