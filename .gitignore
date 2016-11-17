@@ -38,3 +38,5 @@ nosetests.xml
 .DS_STORE
 test.py
 docs/_build
+
+.venv
