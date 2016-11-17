@@ -3,6 +3,10 @@
 History
 -------
 
+0.8.6 (2016-11-17)
+++++++++++++++++++
+- Handle AMP image list of strings vs list of objects
+
 0.8.5 (2016-11-03)
 ++++++++++++++++++
 - Handle AMP data that is contained in a list
