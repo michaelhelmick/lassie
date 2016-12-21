@@ -333,7 +333,7 @@ class Lassie(object):
                             image_list = image.get('@list')
                             if image_list:
                                 for _image in image_list:
-                                    if isinstance(_image, str) or isinstance(_image, unicode):
+                                    if isinstance(_image, str):
                                         data['images'].append({
                                             'src': urljoin(url, _image),
                                         })
