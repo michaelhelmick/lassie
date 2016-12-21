@@ -343,12 +343,18 @@ class Lassie(object):
                                             'width': convert_to_int(_image.get('width')),
                                             'height': convert_to_int(_image.get('height')),
                                         })
-                            else:
+                            elif not image_list and image.get('url') and url != image.get('url'):
                                 data['images'].append({
                                     'src': urljoin(url, image.get('url')),
                                     'width': convert_to_int(image.get('width')),
                                     'height': convert_to_int(image.get('height')),
                                 })
+
+                    thumbnail_url = _json.get('thumbnailUrl')
+                    if thumbnail_url:
+                        data['images'].append({
+                            'src': urljoin(url, thumbnail_url),
+                        })
 
                     _type = _json.get('@type')
                     if _type and _type == 'VideoObject':

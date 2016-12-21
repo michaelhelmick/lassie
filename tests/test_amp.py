@@ -47,6 +47,14 @@ class LassieAMPTestCase(LassieBaseTestCase):
 
         self.assertEqual(1, len(data['images']))
 
+    def test_list_image_empty(self):
+        url = 'http://lassie.it/amp/list_image_empty.html'
+
+        l = Lassie()
+        data = l.fetch(url)
+
+        self.assertEqual(1, len(data['images']))
+
     def test_list_json(self):
         url = 'http://lassie.it/amp/list_json.html'
 
@@ -69,7 +77,7 @@ class LassieAMPTestCase(LassieBaseTestCase):
         l = Lassie()
         data = l.fetch(url)
 
-        self.assertEqual(1, len(data['images']))
+        self.assertEqual(2, len(data['images']))
 
     def test_list_thumbnail_image(self):
         url = 'http://lassie.it/amp/list_thumbnail_image.html'
@@ -77,7 +85,7 @@ class LassieAMPTestCase(LassieBaseTestCase):
         l = Lassie()
         data = l.fetch(url)
 
-        self.assertEqual(1, len(data['images']))
+        self.assertEqual(2, len(data['images']))
 
     def test_str_thumbnail_image(self):
         url = 'http://lassie.it/amp/str_thumbnail_image.html'
@@ -85,4 +93,4 @@ class LassieAMPTestCase(LassieBaseTestCase):
         l = Lassie()
         data = l.fetch(url)
 
-        self.assertEqual(1, len(data['images']))
+        self.assertEqual(2, len(data['images']))
