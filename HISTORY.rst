@@ -3,6 +3,11 @@
 History
 -------
 
+0.8.7 (2016-12-21)
+++++++++++++++++++
+- Fix Python 3 support
+- Handle empty AMP image lists
+
 0.8.6 (2016-11-17)
 ++++++++++++++++++
 - Handle AMP image list of strings vs list of objects
