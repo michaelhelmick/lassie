@@ -185,11 +185,7 @@ class Lassie(object):
         return data
 
     def _retrieve_headers(self, url):  # pragma: no cover
-        request_kwargs = {}
-        for k, v in self._request_opts.items():
-            if k in REQUEST_OPTS['request']:
-                # Set request specific kwarg
-                request_kwargs[k] = v
+        request_kwargs = self.merge_request_kwargs()
 
         try:
             response = self.client.head(url, **request_kwargs)
@@ -200,18 +196,23 @@ class Lassie(object):
         return response.headers, status_code
 
     def _retrieve_content(self, url):  # pragma: no cover
-        try:
-            request_kwargs = {}
-            for k, v in self._request_opts.items():
-                if k in REQUEST_OPTS['request']:
-                    # Set request specific kwarg
-                    request_kwargs[k] = v
+        request_kwargs = self.merge_request_kwargs()
 
             response = self.client.get(url, **request_kwargs)
         except requests.exceptions.RequestException as e:
             raise LassieError(e)
 
         return response.text, response.status_code
+
+    def merge_request_kwargs(self):
+        request_kwargs = {}
+
+        for k, v in self._request_opts.items():
+            if k in REQUEST_OPTS['request']:
+                # Set request specific kwarg
+                request_kwargs[k] = v
+
+        return request_kwargs
 
     def _filter_meta_data(self, source, soup, data, url=None):
         """This method filters the web page content for meta tags that match patterns given in the ``FILTER_MAPS``
