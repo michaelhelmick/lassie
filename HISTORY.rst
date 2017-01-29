@@ -3,6 +3,11 @@
 History
 -------
 
+0.9.0 (2017-01-29)
+++++++++++++++++++
+- Added a default fake user agent to use instead of using python-requests/version (some websites will mark certain user agents as bot attempts)
+- Updated requests to 2.13.0
+
 0.8.7 (2016-12-21)
 ++++++++++++++++++
 - Fix Python 3 support
