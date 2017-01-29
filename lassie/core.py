@@ -13,6 +13,7 @@ from os.path import basename
 
 import requests
 from bs4 import BeautifulSoup
+from requests import Request, Session
 
 from .compat import str, urljoin, urlparse
 from .exceptions import LassieError
@@ -59,7 +60,7 @@ class Lassie(object):
         self.handle_file_content = False
         self.user_agent_set_manually = False
         self._request_opts = {}
-        self.client = requests.Session()
+        self.client = Session()
 
     @property
     def request_opts(self):
@@ -201,21 +202,32 @@ class Lassie(object):
 
         return data
 
+    def _prepare_request(self, method, url, headers, **request_kwargs):
+        request = Request(method, url, headers=headers)
+        prepped = request.prepare()
+
+        if not self.user_agent_set_manually:
+            prepped.headers['User-Agent'] = determine_user_agent(prepped.headers.get('User-Agent'))
+
+        return prepped
+
     def _retrieve_headers(self, url):  # pragma: no cover
         request_kwargs = self.merge_request_kwargs()
 
         try:
-            response = self.client.head(url, **request_kwargs)
-            status_code = response.status_code
+            request = self._prepare_request('HEAD', url, headers=self.client.headers, **request_kwargs)
+            response = self.client.send(request, **request_kwargs)
         except requests.exceptions.RequestException as e:
             raise LassieError(e)
 
-        return response.headers, status_code
+        return response.headers, response.status_code
 
     def _retrieve_content(self, url):  # pragma: no cover
         request_kwargs = self.merge_request_kwargs()
 
-            response = self.client.get(url, **request_kwargs)
+        try:
+            request = self._prepare_request('GET', url, headers=self.client.headers, **request_kwargs)
+            response = self.client.send(request, **request_kwargs)
         except requests.exceptions.RequestException as e:
             raise LassieError(e)
 
