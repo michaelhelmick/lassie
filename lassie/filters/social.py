@@ -8,9 +8,9 @@ This module contains data social related content to help Lassie filter for conte
 
 """
 
-from ..compat import str
-
 import re
+
+from ..compat import str
 
 SOCIAL_MAPS = {
     'meta': {

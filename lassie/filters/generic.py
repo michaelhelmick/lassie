@@ -8,9 +8,9 @@ This module contains data about generic type content to help Lassie filter for c
 
 """
 
-from ..compat import str
-
 import re
+
+from ..compat import str
 
 GENERIC_MAPS = {
     'meta': {

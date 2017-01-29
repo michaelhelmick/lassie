@@ -1,7 +1,7 @@
-from .base import LassieBaseTestCase
-
 from lassie import Lassie, LassieError
 from lassie.utils import FAKE_USER_AGENT
+
+from .base import LassieBaseTestCase
 
 
 class LassieCoreTestCase(LassieBaseTestCase):
