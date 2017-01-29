@@ -1,10 +1,10 @@
 import mimetypes
-
-from lassie.core import Lassie
-from lassie.compat import urlparse
+import unittest
 
 from mock import patch
-import unittest
+
+from lassie.compat import urlparse
+from lassie.core import Lassie
 
 
 def _mock_retrieve_content(mock, url):

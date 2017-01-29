@@ -10,6 +10,7 @@ This module implements the Lassie API.
 
 from .core import Lassie
 
+
 def fetch(url, **kwargs):
     """Constructs and sends a :class:`Lassie <Lassie>`
     Retrieves content from the specified url, parses it, and returns

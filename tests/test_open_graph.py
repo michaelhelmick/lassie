@@ -1,6 +1,6 @@
-from .base import LassieBaseTestCase
-
 import lassie
+
+from .base import LassieBaseTestCase
 
 
 class LassieOpenGraphTestCase(LassieBaseTestCase):

@@ -8,9 +8,9 @@ This module contains Apple related content to help Lassie filter for content.
 
 """
 
-from ..compat import str
-
 import re
+
+from ..compat import str
 
 APPLE_MAPS = {  # http://i.imgur.com/cla85xT.jpg
     'link': {
