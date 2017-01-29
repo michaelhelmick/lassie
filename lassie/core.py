@@ -13,11 +13,15 @@ from os.path import basename
 
 import requests
 from bs4 import BeautifulSoup
+from requests import Request, Session
 
 from .compat import str, urljoin, urlparse
 from .exceptions import LassieError
 from .filters import FILTER_MAPS
-from .utils import clean_text, convert_to_int, normalize_image_data, normalize_locale
+from .utils import (
+    FAKE_USER_AGENT, clean_text, convert_to_int, determine_user_agent, normalize_image_data,
+    normalize_locale,
+)
 
 REQUEST_OPTS = {
     'client': ('cert', 'headers', 'hooks', 'max_redirects', 'proxies'),
@@ -54,8 +58,9 @@ class Lassie(object):
         self.all_images = False
         self.parser = 'html5lib'
         self.handle_file_content = False
+        self.user_agent_set_manually = False
         self._request_opts = {}
-        self.client = requests.Session()
+        self.client = Session()
 
     @property
     def request_opts(self):
@@ -66,9 +71,22 @@ class Lassie(object):
         for k, v in _dict.items():
             if (k in REQUEST_OPTS['client'] or k in REQUEST_OPTS['request']):
                 self._request_opts[k] = v
+
             if k in REQUEST_OPTS['client']:
                 setattr(self.client, k, v)
 
+        if not self.client.headers or not isinstance(self.client.headers, (dict, requests.structures.CaseInsensitiveDict)):
+            self.client.headers = {}
+
+        self.client.headers = requests.structures.CaseInsensitiveDict(self.client.headers)
+
+        user_agent = self.client.headers.get('User-Agent')
+        self.client.headers['User-Agent'] = determine_user_agent(user_agent)
+
+        if user_agent != requests.utils.default_user_agent() and user_agent != FAKE_USER_AGENT:
+            self.user_agent_set_manually = True
+        else:
+            self.user_agent_set_manually = False
 
     def __repr__(self):
         return '<Lassie [parser: %s]>' % (self.parser)
@@ -184,34 +202,46 @@ class Lassie(object):
 
         return data
 
+    def _prepare_request(self, method, url, headers, **request_kwargs):
+        request = Request(method, url, headers=headers)
+        prepped = request.prepare()
+
+        if not self.user_agent_set_manually:
+            prepped.headers['User-Agent'] = determine_user_agent(prepped.headers.get('User-Agent'))
+
+        return prepped
+
     def _retrieve_headers(self, url):  # pragma: no cover
+        request_kwargs = self.merge_request_kwargs()
+
+        try:
+            request = self._prepare_request('HEAD', url, headers=self.client.headers, **request_kwargs)
+            response = self.client.send(request, **request_kwargs)
+        except requests.exceptions.RequestException as e:
+            raise LassieError(e)
+
+        return response.headers, response.status_code
+
+    def _retrieve_content(self, url):  # pragma: no cover
+        request_kwargs = self.merge_request_kwargs()
+
+        try:
+            request = self._prepare_request('GET', url, headers=self.client.headers, **request_kwargs)
+            response = self.client.send(request, **request_kwargs)
+        except requests.exceptions.RequestException as e:
+            raise LassieError(e)
+
+        return response.text, response.status_code
+
+    def merge_request_kwargs(self):
         request_kwargs = {}
+
         for k, v in self._request_opts.items():
             if k in REQUEST_OPTS['request']:
                 # Set request specific kwarg
                 request_kwargs[k] = v
 
-        try:
-            response = self.client.head(url, **request_kwargs)
-            status_code = response.status_code
-        except requests.exceptions.RequestException as e:
-            raise LassieError(e)
-
-        return response.headers, status_code
-
-    def _retrieve_content(self, url):  # pragma: no cover
-        try:
-            request_kwargs = {}
-            for k, v in self._request_opts.items():
-                if k in REQUEST_OPTS['request']:
-                    # Set request specific kwarg
-                    request_kwargs[k] = v
-
-            response = self.client.get(url, **request_kwargs)
-        except requests.exceptions.RequestException as e:
-            raise LassieError(e)
-
-        return response.text, response.status_code
+        return request_kwargs
 
     def _filter_meta_data(self, source, soup, data, url=None):
         """This method filters the web page content for meta tags that match patterns given in the ``FILTER_MAPS``

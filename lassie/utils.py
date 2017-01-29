@@ -11,10 +11,13 @@ This module contains the set of helper functions executed by Lassie methods.
 import locale
 import re
 
+from requests.utils import default_user_agent
+
 from .compat import str, urljoin
 
 CLEANER = re.compile(r'[\r\n\t]')
 RE_INT = re.compile(r'\d+')
+FAKE_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/603.1.20 (KHTML, like Gecko) Version/10.1 Safari/603.1.20'
 
 def clean_text(value):
     """Removes all line breaks, new lines and tabs from the specified content
@@ -74,3 +77,9 @@ def normalize_image_data(data, url):
         img['height'] = height
 
     return img
+
+def determine_user_agent(user_agent):
+    if not user_agent or  user_agent == default_user_agent():
+        return FAKE_USER_AGENT
+
+    return user_agent
