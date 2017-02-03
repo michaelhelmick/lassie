@@ -8,7 +8,9 @@ This module contains a Lassie object to maintain settings across lassie.
 
 """
 
+
 import json
+import re
 from os.path import basename
 
 import requests
@@ -157,8 +159,12 @@ class Lassie(object):
                 })
         else:
             html, status_code = self._retrieve_content(url)
+
             if not html:
                 raise LassieError('There was no content to parse.')
+
+            if not '<html' in html:
+                html = re.sub(r'(?:<!DOCTYPE(?:\s\w)?>(?:<head>)?)', '<!DOCTYPE html><html>', html)
 
             soup = BeautifulSoup(clean_text(html), parser)
 
