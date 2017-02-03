@@ -151,3 +151,11 @@ class LassieCoreTestCase(LassieBaseTestCase):
 
         l = Lassie()
         l._prepare_request('HEAD', url=url, headers=l.client.headers)
+
+    def test_no_html_tag(self):
+        url = 'http://lassie.it/core/no_html_tag.html'
+
+        l = Lassie()
+        data = l.fetch(url)
+
+        self.assertTrue('no_html_tag' in data['title'])
