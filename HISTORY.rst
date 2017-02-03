@@ -3,6 +3,12 @@
 History
 -------
 
+0.10.0 (2017-02-03)
+++++++++++++++++++
+- Fix issue where a website may have malformed HTML and no <html> tag causing soup.html to be None (#60)
+- Updated beautifulsoup4 to 4.5.3
+- Update html5lib to 1.0b10
+
 0.9.0 (2017-01-29)
 ++++++++++++++++++
 - Added a default fake user agent to use instead of using python-requests/version (some websites will mark certain user agents as bot attempts)
