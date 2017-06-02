@@ -3,6 +3,10 @@
 History
 -------
 
+0.10.1 (2017-06-2)
+++++++++++++++++++
+- Remove owl emoji from README.rst so installs on Windows don't fail.
+
 0.10.0 (2017-02-03)
 ++++++++++++++++++
 - Fix issue where a website may have malformed HTML and no <html> tag causing soup.html to be None (#60)
