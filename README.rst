@@ -10,7 +10,7 @@ Lassie
 .. image:: https://img.shields.io/coveralls/michaelhelmick/lassie/master.svg?style=flat-square
   :target: https://coveralls.io/r/michaelhelmick/lassie?branch=master
 
-.. image:: https://img.shields.io/badge/Say%20Thanks!-:)-1EAEDB.svg
+.. image:: https://img.shields.io/badge/Say%20Thanks!-:)-1EAEDB.svg?style=flat-square
     :target: https://saythanks.io/to/michaelhelmick
 
 Lassie is a Python library for retrieving basic content from websites.
