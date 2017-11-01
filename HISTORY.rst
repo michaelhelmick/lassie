@@ -3,6 +3,10 @@
 History
 -------
 
+0.11.1 (2017-11-01)
+++++++++++++++++++
+- Fix provider module once lassie is packaged.
+
 0.11.0 (2017-11-01)
 ++++++++++++++++++
 - Add support for OEmbed providers (YouTube)
