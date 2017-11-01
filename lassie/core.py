@@ -20,6 +20,7 @@ from requests import Request, Session
 from .compat import str, urljoin, urlparse
 from .exceptions import LassieError
 from .filters import FILTER_MAPS
+from .filters.oembed.providers import consumer, parse_oembed_data
 from .utils import (
     FAKE_USER_AGENT, clean_text, convert_to_int, determine_user_agent, normalize_image_data,
     normalize_locale,
@@ -101,9 +102,10 @@ class Lassie(object):
         web page.
 
         Priority tree is as follows:
-            1. Open Graph
-            2. Twitter Card
-            3. Other meta content (i.e. description, keywords)
+            1. OEmbed
+            2. Open Graph
+            3. Twitter Card
+            4. Other meta content (i.e. description, keywords)
 
         :param url: URL to send a GET request to
         :param open_graph: (optional) If ``True``, filters web page content for Open Graph meta tags. The content of these properties have top priority on return values.
@@ -158,51 +160,60 @@ class Lassie(object):
                     'src': url,
                 })
         else:
-            html, status_code = self._retrieve_content(url)
+            try:
+                oembed_data, status_code = self._retrieve_oembed_data(url)
+                parse_oembed_data(oembed_data, data)
+            except:
+                html, status_code = self._retrieve_content(url)
 
-            if not html:
-                raise LassieError('There was no content to parse.')
+                if not html:
+                    raise LassieError('There was no content to parse.')
 
-            if not '<html' in html:
-                html = re.sub(r'(?:<!DOCTYPE(?:\s\w)?>(?:<head>)?)', '<!DOCTYPE html><html>', html)
+                if not '<html' in html:
+                    html = re.sub(r'(?:<!DOCTYPE(?:\s\w)?>(?:<head>)?)', '<!DOCTYPE html><html>', html)
 
-            soup = BeautifulSoup(clean_text(html), parser)
+                soup = BeautifulSoup(clean_text(html), parser)
 
-            self._filter_amp_data(soup, data, url, all_images)
+                self._filter_amp_data(soup, data, url, all_images)
 
-            if open_graph:
-                self._filter_meta_data('open_graph', soup, data, url)
+                if open_graph:
+                    self._filter_meta_data('open_graph', soup, data, url)
 
-            if twitter_card:
-                self._filter_meta_data('twitter_card', soup, data)
+                if twitter_card:
+                    self._filter_meta_data('twitter_card', soup, data)
 
-            self._filter_meta_data('generic', soup, data)
+                self._filter_meta_data('generic', soup, data)
 
-            if touch_icon:
-                self._filter_link_tag_data('touch_icon', soup, data, url)
+                if touch_icon:
+                    self._filter_link_tag_data('touch_icon', soup, data, url)
 
-            if favicon:
-                self._filter_link_tag_data('favicon', soup, data, url)
+                if favicon:
+                    self._filter_link_tag_data('favicon', soup, data, url)
 
-            if canonical:
-                self._filter_link_tag_data('canonical', soup, data, url)
+                if canonical:
+                    self._filter_link_tag_data('canonical', soup, data, url)
 
-            if all_images:
-                # Maybe filter out 1x1, no "good" way to do this if image doesn't supply width/height
-                self._find_all_images(soup, data, url)
+                if all_images:
+                    # Maybe filter out 1x1, no "good" way to do this if image doesn't supply
+                    # width/height.
+                    self._find_all_images(soup, data, url)
 
-            # TODO: Find a good place for setting url, title and locale
-            lang = soup.html.get('lang') if soup.html.get('lang') else soup.html.get('xml:lang')
-            if lang and (not 'locale' in data):
-                locale = normalize_locale(lang)
-                if locale:
-                    data['locale'] = locale
+                # TODO: Find a good place for setting url, title and locale
+                if soup.html.get('lang'):
+                    lang = soup.html.get('lang')
+                else:
+                    lang = soup.html.get('xml:lang')
 
-            if not 'url' in data:
-                data['url'] = url
+                if lang and (not 'locale' in data):
+                    locale = normalize_locale(lang)
+                    if locale:
+                        data['locale'] = locale
 
-            if not 'title' in data and hasattr(soup.title, 'string'):
-                data['title'] = soup.title.string
+                if not 'url' in data:
+                    data['url'] = url
+
+                if not 'title' in data and hasattr(soup.title, 'string'):
+                    data['title'] = soup.title.string
 
         data['status_code'] = status_code
 
@@ -217,11 +228,23 @@ class Lassie(object):
 
         return prepped
 
+    def _retrieve_oembed_data(self, url):  # pragma: no cover
+        try:
+            response = consumer.embed(url)
+            oembed_data = response.getData()
+            status_code = 200
+        except Exception as e:
+            raise LassieError(e)
+
+        return oembed_data, status_code
+
     def _retrieve_headers(self, url):  # pragma: no cover
         request_kwargs = self.merge_request_kwargs()
 
         try:
-            request = self._prepare_request('HEAD', url, headers=self.client.headers, **request_kwargs)
+            request = self._prepare_request(
+                'HEAD', url, headers=self.client.headers, **request_kwargs
+            )
             response = self.client.send(request, **request_kwargs)
         except requests.exceptions.RequestException as e:
             raise LassieError(e)
@@ -232,7 +255,9 @@ class Lassie(object):
         request_kwargs = self.merge_request_kwargs()
 
         try:
-            request = self._prepare_request('GET', url, headers=self.client.headers, **request_kwargs)
+            request = self._prepare_request(
+                'GET', url, headers=self.client.headers, **request_kwargs
+            )
             response = self.client.send(request, **request_kwargs)
         except requests.exceptions.RequestException as e:
             raise LassieError(e)

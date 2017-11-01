@@ -1,0 +1,15 @@
+{
+  "author_name": "BadAuthor",
+  "author_url": "https://www.youtube.com/user/BadAuthor",
+  "height": 270,
+  "html": "",
+  "provider_name": "YouTube",
+  "provider_url": "https://www.youtube.com/",
+  "thumbnail_height": 360,
+  "thumbnail_url": "https://i.ytimg.com/vi/nothumb/hqdefault.jpg",
+  "thumbnail_width": 480,
+  "title": "Bad Author",
+  "type": "video",
+  "version": "1.0",
+  "width": 480
+}
