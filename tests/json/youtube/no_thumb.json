@@ -6,7 +6,7 @@
   "provider_name": "YouTube",
   "provider_url": "https://www.youtube.com/",
   "title": "Bad Type",
-  "type": "",
+  "type": "video",
   "version": "1.0",
   "width": 480
 }
