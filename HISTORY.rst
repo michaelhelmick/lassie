@@ -3,7 +3,11 @@
 History
 -------
 
-0.10.1 (2017-06-2)
+0.11.0 (2017-11-01)
+++++++++++++++++++
+- Add support for OEmbed providers (YouTube)
+
+0.10.1 (2017-06-02)
 ++++++++++++++++++
 - Remove owl emoji from README.rst so installs on Windows don't fail.
 
