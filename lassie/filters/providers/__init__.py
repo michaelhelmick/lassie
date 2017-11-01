@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-lassie.filters.oembed.providers
+lassie.filters.providers
 ~~~~~~~~~~
 
 This module contains oembed providers and a python oembed consumer.
