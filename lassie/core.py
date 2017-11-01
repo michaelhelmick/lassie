@@ -20,7 +20,7 @@ from requests import Request, Session
 from .compat import str, urljoin, urlparse
 from .exceptions import LassieError
 from .filters import FILTER_MAPS
-from .filters.providers import consumer, parse_oembed_data
+from .filters.oembed.providers import consumer, parse_oembed_data
 from .utils import (
     FAKE_USER_AGENT, clean_text, convert_to_int, determine_user_agent, normalize_image_data,
     normalize_locale,

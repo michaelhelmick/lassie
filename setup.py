@@ -8,7 +8,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-__version__ = '0.11.2'
+__version__ = '0.11.3'
 
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload')
@@ -16,7 +16,8 @@ if sys.argv[-1] == 'publish':
 
 packages = [
     'lassie',
-    'lassie.filters'
+    'lassie.filters',
+    'lassie.filters.oembed'
 ]
 
 setup(

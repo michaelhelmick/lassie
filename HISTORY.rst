@@ -3,9 +3,9 @@
 History
 -------
 
-0.11.2 (2017-11-01)
+0.11.3 (2017-11-01)
 ++++++++++++++++++
-- Fix provider module once lassie is packaged.
+- Fix filters.ombed module once lassie is packaged.
 
 0.11.0 (2017-11-01)
 ++++++++++++++++++
