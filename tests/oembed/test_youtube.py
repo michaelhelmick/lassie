@@ -26,7 +26,7 @@ class LassieOEmbedYouTubeTestCase(LassieBaseTestCase):
         data = l.fetch(url)
 
     def test_youtube_no_thumb(self):
-        url = 'http://lassie.it/youtube/no_type.json'
+        url = 'http://lassie.it/youtube/no_thumb.json'
 
         l = Lassie()
         data = l.fetch(url)

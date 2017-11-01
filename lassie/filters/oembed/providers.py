@@ -45,7 +45,6 @@ def parse_oembed_data(oembed_data, data):
     :type data: dict
 
     """
-    print 'oembed_data'
     data.update({
         'oembed': oembed_data,
     })
