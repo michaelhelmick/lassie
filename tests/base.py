@@ -6,18 +6,22 @@ from mock import patch
 
 from lassie.compat import urlparse
 from lassie.core import Lassie
+from lassie.exceptions import LassieError
 
 
 def _mock_retrieve_oembed_data(mock, url):
     if '.json' not in url:
         return {}, 404
 
-    filename = urlparse(url).path
-    _file = open('./json%s' % filename, 'r')
-    content = _file.read()
-    _file.close()
+    try:
+        filename = urlparse(url).path
+        _file = open('./json%s' % filename, 'r')
+        content = _file.read()
+        _file.close()
 
-    status_code = 200
+        status_code = 200
+    except Exception as e:
+        raise LassieError(e)
 
     return json.loads(content), status_code
 

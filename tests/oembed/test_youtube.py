@@ -13,6 +13,14 @@ class LassieOEmbedYouTubeTestCase(LassieBaseTestCase):
         self.assertEqual(len(data['videos']), 1)
         self.assertEqual(len(data['images']), 1)
 
+    def test_bad_url(self):
+        url = 'http://lassie.it/youtube/bad_url_123456.json'
+
+        l = Lassie()
+        data = l.fetch(url)
+
+        self.assertIsNone(data.get('oembed'))
+
     def test_youtube_bad_html(self):
         url = 'http://lassie.it/youtube/bad_html.json'
 
