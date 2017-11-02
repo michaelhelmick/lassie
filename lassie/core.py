@@ -163,57 +163,59 @@ class Lassie(object):
             try:
                 oembed_data, status_code = self._retrieve_oembed_data(url)
                 parse_oembed_data(oembed_data, data)
-            except:
-                html, status_code = self._retrieve_content(url)
+            except LassieError:
+                oembed_data = None
 
-                if not html:
-                    raise LassieError('There was no content to parse.')
+            html, status_code = self._retrieve_content(url)
 
-                if not '<html' in html:
-                    html = re.sub(r'(?:<!DOCTYPE(?:\s\w)?>(?:<head>)?)', '<!DOCTYPE html><html>', html)
+            if not html and not oembed_data:
+                raise LassieError('There was no content to parse.')
 
-                soup = BeautifulSoup(clean_text(html), parser)
+            if '<html' not in html:
+                html = re.sub(r'(?:<!DOCTYPE(?:\s\w)?>(?:<head>)?)', '<!DOCTYPE html><html>', html)
 
-                self._filter_amp_data(soup, data, url, all_images)
+            soup = BeautifulSoup(clean_text(html), parser)
 
-                if open_graph:
-                    self._filter_meta_data('open_graph', soup, data, url)
+            self._filter_amp_data(soup, data, url, all_images)
 
-                if twitter_card:
-                    self._filter_meta_data('twitter_card', soup, data)
+            if open_graph:
+                self._filter_meta_data('open_graph', soup, data, url)
 
-                self._filter_meta_data('generic', soup, data)
+            if twitter_card:
+                self._filter_meta_data('twitter_card', soup, data)
 
-                if touch_icon:
-                    self._filter_link_tag_data('touch_icon', soup, data, url)
+            self._filter_meta_data('generic', soup, data)
 
-                if favicon:
-                    self._filter_link_tag_data('favicon', soup, data, url)
+            if touch_icon:
+                self._filter_link_tag_data('touch_icon', soup, data, url)
 
-                if canonical:
-                    self._filter_link_tag_data('canonical', soup, data, url)
+            if favicon:
+                self._filter_link_tag_data('favicon', soup, data, url)
 
-                if all_images:
-                    # Maybe filter out 1x1, no "good" way to do this if image doesn't supply
-                    # width/height.
-                    self._find_all_images(soup, data, url)
+            if canonical:
+                self._filter_link_tag_data('canonical', soup, data, url)
 
-                # TODO: Find a good place for setting url, title and locale
-                if soup.html.get('lang'):
-                    lang = soup.html.get('lang')
-                else:
-                    lang = soup.html.get('xml:lang')
+            if all_images:
+                # Maybe filter out 1x1, no "good" way to do this if image doesn't supply
+                # width/height.
+                self._find_all_images(soup, data, url)
 
-                if lang and (not 'locale' in data):
-                    locale = normalize_locale(lang)
-                    if locale:
-                        data['locale'] = locale
+            # TODO: Find a good place for setting url, title and locale
+            if soup.html.get('lang'):
+                lang = soup.html.get('lang')
+            else:
+                lang = soup.html.get('xml:lang')
 
-                if not 'url' in data:
-                    data['url'] = url
+            if lang and ('locale' not in data):
+                locale = normalize_locale(lang)
+                if locale:
+                    data['locale'] = locale
 
-                if not 'title' in data and hasattr(soup.title, 'string'):
-                    data['title'] = soup.title.string
+            if 'url' not in data:
+                data['url'] = url
+
+            if ('title' not in data or not data.get('title')) and hasattr(soup.title, 'string'):
+                data['title'] = soup.title.string
 
         data['status_code'] = status_code
 
