@@ -53,6 +53,11 @@ def parse_oembed_data(oembed_data, data):
     if not _type:
         return data
 
+    if oembed_data.get('title'):
+        data.update({
+            'title': oembed_data.get('title'),
+        })
+
     if _type == 'video':
         try:
             item = {
