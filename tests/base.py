@@ -9,6 +9,9 @@ from lassie.core import Lassie
 
 
 def _mock_retrieve_oembed_data(mock, url):
+    if '.json' not in url:
+        return {}, 404
+
     filename = urlparse(url).path
     _file = open('./json%s' % filename, 'r')
     content = _file.read()
@@ -20,7 +23,11 @@ def _mock_retrieve_oembed_data(mock, url):
 
 
 def _mock_retrieve_content(mock, url):
-    filename = urlparse(url).path
+    if '.html' not in url:
+        filename = '/generic/all_properties.html'
+    else:
+        filename = urlparse(url).path
+
     _file = open('./templates%s' % filename, 'r')
     content = _file.read()
     _file.close()
