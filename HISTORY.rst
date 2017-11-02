@@ -3,9 +3,13 @@
 History
 -------
 
+0.11.4 (2017-11-01)
+++++++++++++++++++
+- Always get oembed AND html data.
+
 0.11.3 (2017-11-01)
 ++++++++++++++++++
-- Fix filters.ombed module once lassie is packaged.
+- Fix filters.oembed module once lassie is packaged.
 
 0.11.0 (2017-11-01)
 ++++++++++++++++++
