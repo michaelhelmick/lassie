@@ -3,6 +3,10 @@
 History
 -------
 
+0.11.6 (2018-05-24)
+++++++++++++++++++
+- Fix issue where AMP images was a list of dictionaries and being identified as an object.
+
 0.11.5 (2017-12-27)
 ++++++++++++++++++
 - Pin requests==2.18.4
