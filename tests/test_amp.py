@@ -39,6 +39,14 @@ class LassieAMPTestCase(LassieBaseTestCase):
 
         self.assertEqual(2, len(data['images']))
 
+    def test_list_image_list(self):
+        url = 'http://lassie.it/amp/list_image_list.html'
+
+        l = Lassie()
+        data = l.fetch(url)
+
+        self.assertEqual(2, len(data['images']))
+
     def test_list_image_str(self):
         url = 'http://lassie.it/amp/list_image_str.html'
 
