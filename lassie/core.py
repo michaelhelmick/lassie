@@ -392,7 +392,13 @@ class Lassie(object):
                             data['images'].append({
                                 'src': urljoin(url, image),
                             })
-                        elif isinstance(image, object):
+                        elif isinstance(image, list) or isinstance(image, object):
+                            if isinstance(image, list):
+                                try:
+                                    image = image[0]
+                                except IndexError:
+                                    pass
+
                             image_list = image.get('@list')
                             if image_list:
                                 for _image in image_list:
