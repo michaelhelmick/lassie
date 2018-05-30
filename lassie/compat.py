@@ -10,20 +10,16 @@ Python 3 compatibility.
 
 import sys
 
-_ver = sys.version_info
-
-#: Python 2.x?
-is_py2 = (_ver[0] == 2)
-
-#: Python 3.x?
-is_py3 = (_ver[0] == 3)
-
-if is_py2:
+if sys.version_info < (3,):
     from urlparse import urljoin, urlparse
-
-    str = unicode
-
-elif is_py3:
+    str = unicode  # noqa: F821
+else:
     from urllib.parse import urljoin, urlparse
-
     str = str
+
+
+__all__ = [
+    'urljoin',
+    'urlparse',
+    'str'
+]
