@@ -8,6 +8,7 @@ This module contains the set of Lassie exceptions.
 
 """
 
+
 class LassieError(Exception):
     """Generic catch-all Exceptions"""
     pass

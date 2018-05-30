@@ -13,5 +13,6 @@ class LassieFileContentTestCase(LassieBaseTestCase):
 
         self.assertEqual(len(data['images']), 1)
         image = data['images'][0]
-        self.assertEqual(image['src'], 'http://lassie.it/handle_file_content/image_file.jpg')
+        self.assertEqual(image['src'],
+                         'http://lassie.it/handle_file_content/image_file.jpg')
         self.assertEqual(image['type'], 'body_image')

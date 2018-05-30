@@ -10,7 +10,8 @@ class LassieTwitterCardTestCase(LassieBaseTestCase):
 
         self.assertEqual(data['locale'], 'en_US')
         self.assertEqual(data['title'], 'Lassie Generic Test | all_properties')
-        self.assertEqual(data['description'], 'Just a random description of a web page.')
+        self.assertEqual(data['description'],
+                         'Just a random description of a web page.')
         self.assertEqual(data['url'], 'http://example.com/canonical/path')
         self.assertEqual(len(data['keywords']), 5)
 
@@ -18,7 +19,7 @@ class LassieTwitterCardTestCase(LassieBaseTestCase):
         url = 'http://lassie.it/generic/bad_locale.html'
         data = lassie.fetch(url)
 
-        self.assertTrue(not 'locale' in data)
+        self.assertTrue('locale' not in data)
 
     def test_generic_favicon(self):
         url = 'http://lassie.it/generic/favicon.html'
@@ -33,7 +34,7 @@ class LassieTwitterCardTestCase(LassieBaseTestCase):
         url = 'http://lassie.it/generic/no_title.html'
         data = lassie.fetch(url)
 
-        self.assertTrue(not 'title' in data)
+        self.assertTrue('title' not in data)
 
     def test_canonical(self):
         url = 'http://lassie.it/generic/canonical.html'

@@ -11,29 +11,33 @@ This module contains a Lassie object to maintain settings across lassie.
 
 import json
 import re
+from collections import Mapping
 from os.path import basename
 
 import requests
 from bs4 import BeautifulSoup
-from requests import Request, Session
 
-from .compat import str, urljoin, urlparse
-from .exceptions import LassieError
-from .filters import FILTER_MAPS
-from .filters.oembed.providers import consumer, parse_oembed_data
-from .utils import (
-    FAKE_USER_AGENT, clean_text, convert_to_int, determine_user_agent, normalize_image_data,
-    normalize_locale,
+from lassie.compat import str, urljoin, urlparse
+from lassie.exceptions import LassieError
+from lassie.filters import FILTER_MAPS
+from lassie.filters.oembed.providers import consumer, parse_oembed_data
+from lassie.utils import (
+    FAKE_USER_AGENT, clean_text, convert_to_int, determine_user_agent,
+    normalize_image_data, normalize_locale,
 )
 
 REQUEST_OPTS = {
     'client': ('cert', 'headers', 'hooks', 'max_redirects', 'proxies'),
     'request': ('timeout', 'allow_redirects', 'stream', 'verify'),
 }
+REQUESTS_DEFAULT_UA = requests.utils.default_user_agent()
 
 IMAGE_MIMETYPES = [
     'image/jpeg', 'image/gif', 'image/bmp', 'image/png'
 ]
+
+
+CaseInsensitiveDict = requests.structures.CaseInsensitiveDict
 
 
 def merge_settings(fetch_setting, class_setting):
@@ -63,7 +67,7 @@ class Lassie(object):
         self.handle_file_content = False
         self.user_agent_set_manually = False
         self._request_opts = {}
-        self.client = Session()
+        self.client = requests.Session()
 
     @property
     def request_opts(self):
@@ -72,24 +76,23 @@ class Lassie(object):
     @request_opts.setter
     def request_opts(self, _dict):
         for k, v in _dict.items():
-            if (k in REQUEST_OPTS['client'] or k in REQUEST_OPTS['request']):
+            if k in REQUEST_OPTS['client'] or k in REQUEST_OPTS['request']:
                 self._request_opts[k] = v
 
             if k in REQUEST_OPTS['client']:
                 setattr(self.client, k, v)
 
-        if not self.client.headers or not isinstance(self.client.headers, (dict, requests.structures.CaseInsensitiveDict)):
+        if not self.client.headers or \
+                not isinstance(self.client.headers, (Mapping, CaseInsensitiveDict)):
             self.client.headers = {}
 
-        self.client.headers = requests.structures.CaseInsensitiveDict(self.client.headers)
+        self.client.headers = CaseInsensitiveDict(self.client.headers)
 
         user_agent = self.client.headers.get('User-Agent')
         self.client.headers['User-Agent'] = determine_user_agent(user_agent)
 
-        if user_agent != requests.utils.default_user_agent() and user_agent != FAKE_USER_AGENT:
-            self.user_agent_set_manually = True
-        else:
-            self.user_agent_set_manually = False
+        self.user_agent_set_manually = \
+            user_agent not in (REQUESTS_DEFAULT_UA, FAKE_USER_AGENT)
 
     def __repr__(self):
         return '<Lassie [parser: %s]>' % (self.parser)
@@ -97,7 +100,7 @@ class Lassie(object):
     def fetch(self, url, open_graph=None, twitter_card=None, touch_icon=None,
               favicon=None, all_images=None, parser=None, handle_file_content=None,
               canonical=None):
-        """Retrieves content from the specified url, parses it, and returns
+        """ Retrieves content from the specified url, parses it, and returns
         a beautifully crafted dictionary of important information about that
         web page.
 
@@ -107,22 +110,36 @@ class Lassie(object):
             3. Twitter Card
             4. Other meta content (i.e. description, keywords)
 
-        :param url: URL to send a GET request to
-        :param open_graph: (optional) If ``True``, filters web page content for Open Graph meta tags. The content of these properties have top priority on return values.
+        :param url: URL to send a GET request to.
+        :param open_graph: (optional) If ``True``, filters web page content for Open
+                           Graph meta tags. The content of these properties have top
+                           priority on return values.
+                           Default: ``None``.
         :type open_graph: bool
-        :param twitter_card: (optional) If ``True``, filters web page content for Twitter Card meta tags
+        :param twitter_card: (optional) If ``True``, filters web page content for
+                             Twitter Card meta tags.
+                             Default: ``None``.
         :type twitter_card: bool
-        :param touch_icon: (optional) If ``True``, retrieves Apple touch icons and includes them in the response ``images`` array
+        :param touch_icon: (optional) If ``True``, retrieves Apple touch icons and
+                           includes them in the response ``images`` list.
+                           Default: ``None``.
         :type touch_icon: bool
-        :param favicon: (optional) If ``True``, retrieves any favicon images and includes them in the response ``images`` array
+        :param favicon: (optional) If ``True``, retrieves any favicon images and
+                        includes them in the response ``images`` list.
+                        Default: ``None``.
         :type favicon: bool
-        :param canonical: (optional) If ``True``, retrieves canonical url from meta tags. Default: False
+        :param canonical: (optional) If ``True``, retrieves canonical url from meta
+                          tags. Default: ``None``.
         :type canonical: bool
-        :param all_images: (optional) If ``True``, retrieves images inside web pages body and includes them in the response ``images`` array. Default: False
+        :param all_images: (optional) If ``True``, retrieves images inside web pages
+                           body and includes them in the response ``images`` array.
+                           Default: ``None``.
         :type all_images: bool
-        :param parser: (optional) String reference for the parser that BeautifulSoup will use
+        :param parser: (optional) String reference for the parser that BeautifulSoup
+                       shall use. Default: ``None``.
         :type parser: string
-        :param handle_file_content: (optional) If ``True``, lassie will return a generic response when a file is fetched. Default: False
+        :param handle_file_content: (optional) If ``True``, lassie will return a generic
+                                    response when a file is fetched. Default: ``None``.
         :type handle_file_content: bool
 
         """
@@ -135,7 +152,8 @@ class Lassie(object):
         canonical = merge_settings(canonical, self.canonical)
         all_images = merge_settings(all_images, self.all_images)
         parser = merge_settings(parser, self.parser)
-        handle_file_content = merge_settings(handle_file_content, self.handle_file_content)
+        handle_file_content = merge_settings(handle_file_content,
+                                             self.handle_file_content)
 
         data = {
             'images': [],
@@ -147,13 +165,15 @@ class Lassie(object):
         if handle_file_content:
             headers, status_code = self._retrieve_headers(url)
             content_type = headers.get('Content-Type')
-            has_file_content = content_type and not 'text/html' in content_type
+            has_file_content = content_type and content_type != 'text/html'
 
         if has_file_content and content_type:
             has_image_content = content_type in IMAGE_MIMETYPES
             if has_image_content:
                 parsed_url = urlparse(url)
-                data['title'] = basename(parsed_url.path.lstrip('/'))  # TODO: if the url doesn't have an extension, maybe we should match it up to the mimetype and append an ext?
+                data['title'] = basename(parsed_url.path.lstrip('/'))
+                # TODO: if the url doesn't have an extension, maybe we should match it
+                #       up to the mimetype and append an ext?
                 data['url'] = url
                 data['images'].append({
                     'type': 'body_image',
@@ -172,7 +192,8 @@ class Lassie(object):
                 raise LassieError('There was no content to parse.')
 
             if '<html' not in html:
-                html = re.sub(r'(?:<!DOCTYPE(?:\s\w)?>(?:<head>)?)', '<!DOCTYPE html><html>', html)
+                html = re.sub(r'(?:<!DOCTYPE(?:\s\w)?>(?:<head>)?)',
+                              '<!DOCTYPE html><html>', html)
 
             soup = BeautifulSoup(clean_text(html), parser)
 
@@ -214,7 +235,7 @@ class Lassie(object):
             if 'url' not in data:
                 data['url'] = url
 
-            if ('title' not in data or not data.get('title')) and hasattr(soup.title, 'string'):
+            if 'title' not in data and hasattr(soup.title, 'string'):
                 data['title'] = soup.title.string
 
         data['status_code'] = status_code
@@ -222,11 +243,13 @@ class Lassie(object):
         return data
 
     def _prepare_request(self, method, url, headers, **request_kwargs):
-        request = Request(method, url, headers=headers)
+        request = requests.Request(method, url, headers=headers)
         prepped = request.prepare()
 
         if not self.user_agent_set_manually:
-            prepped.headers['User-Agent'] = determine_user_agent(prepped.headers.get('User-Agent'))
+            prepped.headers['User-Agent'] = determine_user_agent(
+                prepped.headers.get('User-Agent')
+             )
 
         return prepped
 
@@ -277,14 +300,15 @@ class Lassie(object):
         return request_kwargs
 
     def _filter_meta_data(self, source, soup, data, url=None):
-        """This method filters the web page content for meta tags that match patterns given in the ``FILTER_MAPS``
+        """ This method filters the web page content for meta tags that match
+        patterns given in the ``FILTER_MAPS``
 
-        :param source: The key of the meta dictionary in ``FILTER_MAPS['meta']``
+        :param source: The key of the meta dictionary in ``FILTER_MAPS['meta']``.
         :type source: string
-        :param soup: BeautifulSoup instance to find meta tags
+        :param soup: BeautifulSoup instance to find meta tags.
         :type soup: instance
-        :param data: The response dictionary to manipulate
-        :type data: (dict)
+        :param data: The response dictionary to manipulate.
+        :type data: dict
 
         """
         meta = FILTER_MAPS['meta'][source]
@@ -308,9 +332,8 @@ class Lassie(object):
                 video_prop = meta['video_key']
 
                 if prop.startswith((image_prop, video_prop)) and \
-                prop.endswith(('width', 'height')):
-                    if prop.endswith(('width', 'height')):
-                        value = convert_to_int(value)
+                        prop.endswith(('width', 'height')):
+                    value = convert_to_int(value)
 
                 if meta_map[prop] == 'locale':
                     locale = normalize_locale(value)
@@ -340,15 +363,16 @@ class Lassie(object):
             data['videos'].append(video)
 
     def _filter_link_tag_data(self, source, soup, data, url):
-        """This method filters the web page content for link tags that match patterns given in the ``FILTER_MAPS``
+        """ This method filters the web page content for link tags that match
+            patterns given in the ``FILTER_MAPS``.
 
-        :param source: The key of the meta dictionary in ``FILTER_MAPS['link']``
+        :param source: The key of the meta dictionary in ``FILTER_MAPS['link']``.
         :type source: string
-        :param soup: BeautifulSoup instance to find meta tags
-        :type soup: instance
-        :param data: The response dictionary to manipulate
-        :type data: (dict)
-        :param url: URL used for making an absolute url
+        :param soup: BeautifulSoup instance to find meta tags.
+        :type soup: BeautifulSoup
+        :param data: The response dictionary to manipulate.
+        :type data: dict
+        :param url: URL used for making an absolute url.
         :type url: string
 
         """
@@ -367,6 +391,8 @@ class Lassie(object):
                 })
 
     def _filter_amp_data(self, soup, data, url, all_images):
+        # TODO uncomplexify
+        # maybe there are json-ld parsers around or evolving?
         amp_scripts = soup.find_all('script', {'type': 'application/ld+json'})
         for script in amp_scripts:
             content = script.contents
@@ -409,10 +435,13 @@ class Lassie(object):
                                     elif isinstance(_image, object):
                                         data['images'].append({
                                             'src': urljoin(url, _image.get('url')),
-                                            'width': convert_to_int(_image.get('width')),
-                                            'height': convert_to_int(_image.get('height')),
+                                            'width':
+                                                convert_to_int(_image.get('width')),
+                                            'height':
+                                                convert_to_int(_image.get('height')),
                                         })
-                            elif not image_list and image.get('url') and url != image.get('url'):
+                            elif (not image_list and image.get('url')
+                                  and url != image.get('url')):
                                 data['images'].append({
                                     'src': urljoin(url, image.get('url')),
                                     'width': convert_to_int(image.get('width')),
@@ -447,14 +476,18 @@ class Lassie(object):
                                     for _thumbnail in thumbnail.get('@list'):
                                         data['images'].append({
                                             'src': urljoin(url, _thumbnail.get('url')),
-                                            'width': convert_to_int(_thumbnail.get('width')),
-                                            'height': convert_to_int(_thumbnail.get('height')),
+                                            'width':
+                                                convert_to_int(_thumbnail.get('width')),
+                                            'height':
+                                                convert_to_int(_thumbnail.get('height'))
                                         })
                                 else:
                                     data['images'].append({
                                         'src': urljoin(url, thumbnail.get('url')),
-                                        'width': convert_to_int(thumbnail.get('width')),
-                                        'height': convert_to_int(thumbnail.get('height')),
+                                        'width':
+                                            convert_to_int(thumbnail.get('width')),
+                                        'height':
+                                            convert_to_int(thumbnail.get('height')),
                                     })
 
                     data['title'] = _json.get('headline', '')

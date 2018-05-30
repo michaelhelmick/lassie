@@ -12,9 +12,12 @@ import re
 
 import oembed
 
-from ...utils import convert_to_int
+from lassie.utils import convert_to_int
 
-HYPERLINK_PATTERN = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
+
+HYPERLINK_PATTERN = re.compile(
+    r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
+)
 
 PROVIDERS = {
     'http://www.youtube.com/oembed': [

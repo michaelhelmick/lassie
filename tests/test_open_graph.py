@@ -23,7 +23,8 @@ class LassieOpenGraphTestCase(LassieBaseTestCase):
 
         self.assertEqual(len(data['videos']), 1)
         video = data['videos'][0]
-        self.assertEqual(video['src'], 'http://www.youtube.com/v/dQw4w9WgXcQ?version=3&autohide=1')
+        self.assertEqual(video['src'],
+                         'http://www.youtube.com/v/dQw4w9WgXcQ?version=3&autohide=1')
         self.assertEqual(video['width'], 640)
         self.assertEqual(video['height'], 480)
         self.assertEqual(video['type'], 'application/x-shockwave-flash')
@@ -33,7 +34,8 @@ class LassieOpenGraphTestCase(LassieBaseTestCase):
         data = lassie.fetch(url)
 
         self.assertEqual(data['url'], url)
-        self.assertEqual(data['title'], 'Lassie Open Graph Test | No og:title, No og:url')
+        self.assertEqual(data['title'],
+                         'Lassie Open Graph Test | No og:title, No og:url')
 
     def test_open_graph_og_image_plus_two_body_images(self):
         url = 'http://lassie.it/open_graph/og_image_plus_two_body_images.html'

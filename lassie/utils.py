@@ -13,11 +13,14 @@ import re
 
 from requests.utils import default_user_agent
 
-from .compat import str, urljoin
+from lassie.compat import str, urljoin
+
 
 CLEANER = re.compile(r'[\r\n\t]')
+FAKE_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/' \
+                  '603.1.20 (KHTML, like Gecko) Version/10.1 Safari/603.1.20'
 RE_INT = re.compile(r'\d+')
-FAKE_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/603.1.20 (KHTML, like Gecko) Version/10.1 Safari/603.1.20'
+
 
 def clean_text(value):
     """Removes all line breaks, new lines and tabs from the specified content
@@ -27,6 +30,7 @@ def clean_text(value):
 
     """
     return CLEANER.sub('', value)
+
 
 def convert_to_int(value):
     """Attempts to convert a specified value to an integer
@@ -47,17 +51,20 @@ def convert_to_int(value):
     except (TypeError, ValueError):
         return None
 
+
 def normalize_locale(value):
     value = value.replace('-', '_')
     the_locale = locale.normalize(value)
 
     if the_locale != value:
-        # Should we return the actual locale, returned from the locale lib instead of splitting?
+        # Should we return the actual locale, returned from the locale lib
+        # instead of splitting?
         try:
             return str(the_locale.split('.')[0])
         except IndexError:  # pragma: no cover
             pass
     return None
+
 
 def normalize_image_data(data, url):
     # Create image list then remove duplicate images?
@@ -78,8 +85,9 @@ def normalize_image_data(data, url):
 
     return img
 
+
 def determine_user_agent(user_agent):
-    if not user_agent or  user_agent == default_user_agent():
+    if not user_agent or user_agent == default_user_agent():
         return FAKE_USER_AGENT
 
     return user_agent

@@ -16,6 +16,12 @@ Lassie is a Python library for retrieving basic content from websites.
 
 __version__ = '0.11.6'
 
-from .api import fetch
-from .core import Lassie
-from .exceptions import LassieError
+from lassie.api import fetch
+from lassie.core import Lassie
+from lassie.exceptions import LassieError
+
+__all__ = [
+    fetch.__name__,
+    Lassie.__name__,
+    LassieError.__name__,
+]

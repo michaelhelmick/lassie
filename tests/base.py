@@ -57,7 +57,9 @@ class LassieBaseTestCase(unittest.TestCase):
     def setUp(self):
         self.patch = patch.object(Lassie, '_retrieve_content', _mock_retrieve_content)
         self.patch2 = patch.object(Lassie, '_retrieve_headers', _mock_retrieve_headers)
-        self.patch3 = patch.object(Lassie, '_retrieve_oembed_data', _mock_retrieve_oembed_data)
+        self.patch3 = patch.object(
+            Lassie, '_retrieve_oembed_data', _mock_retrieve_oembed_data
+        )
 
         self.patch.start()
         self.patch2.start()
