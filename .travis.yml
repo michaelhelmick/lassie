@@ -1,10 +1,14 @@
+sudo: false
 language: python
+cache: pip
 python:
   - 2.7
   - 3.6
-install: pip install -r test_requirements.txt
-script: nosetests -v -w tests/ --logging-filter="lassie" --with-cov --cov lassie --cov-config .coveragerc --cov-report term-missing
+install:
+  - travis_retry pip install tox-travis
+  - [[ $TOXENV == py36 ]] && travis_retry pip install coveralls
+script: tox
 notifications:
   email: false
 after_success:
-  - coveralls
+  - [[ $TOXENV == py36 ]] && coveralls
