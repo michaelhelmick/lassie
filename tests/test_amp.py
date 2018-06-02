@@ -1,104 +1,112 @@
 from lassie import Lassie
 
-from .base import LassieBaseTestCase
+
+def test_all_properites():
+    url = 'http://lassie.it/amp/all_properties.html'
+
+    lassie = Lassie()
+    data = lassie.fetch(url, all_images=True)
+
+    assert len(data['images']) == 3
+
+    title = 'Google Glass Is Dead, Long Live Snapchat Spectacles'
+    assert data['title'] == title
 
 
-class LassieAMPTestCase(LassieBaseTestCase):
-    def test_all_properites(self):
-        url = 'http://lassie.it/amp/all_properties.html'
+def test_bad_json():
+    url = 'http://lassie.it/amp/bad_json.html'
 
-        lassie = Lassie()
-        data = lassie.fetch(url, all_images=True)
+    lassie = Lassie()
+    data = lassie.fetch(url)
 
-        self.assertEqual(len(data['images']), 3)
+    assert 'amp' in data['url']
 
-        title = 'Google Glass Is Dead, Long Live Snapchat Spectacles'
-        self.assertEqual(data['title'], title)
 
-    def test_bad_json(self):
-        url = 'http://lassie.it/amp/bad_json.html'
+def test_str_image():
+    url = 'http://lassie.it/amp/str_image.html'
 
-        lassie = Lassie()
-        data = lassie.fetch(url)
+    lassie = Lassie()
+    data = lassie.fetch(url)
 
-        self.assertTrue('amp' in data['url'])
+    assert len(data['images']) == 1
 
-    def test_str_image(self):
-        url = 'http://lassie.it/amp/str_image.html'
 
-        lassie = Lassie()
-        data = lassie.fetch(url)
+def test_list_image():
+    url = 'http://lassie.it/amp/list_image.html'
 
-        self.assertEqual(1, len(data['images']))
+    lassie = Lassie()
+    data = lassie.fetch(url)
 
-    def test_list_image(self):
-        url = 'http://lassie.it/amp/list_image.html'
+    assert len(data['images']) == 2
 
-        lassie = Lassie()
-        data = lassie.fetch(url)
 
-        self.assertEqual(2, len(data['images']))
+def test_list_image_list():
+    url = 'http://lassie.it/amp/list_image_list.html'
 
-    def test_list_image_list(self):
-        url = 'http://lassie.it/amp/list_image_list.html'
+    lassie = Lassie()
+    data = lassie.fetch(url)
 
-        lassie = Lassie()
-        data = lassie.fetch(url)
+    assert len(data['images']) == 2
 
-        self.assertEqual(2, len(data['images']))
 
-    def test_list_image_str(self):
-        url = 'http://lassie.it/amp/list_image_str.html'
+def test_list_image_str():
+    url = 'http://lassie.it/amp/list_image_str.html'
 
-        lassie = Lassie()
-        data = lassie.fetch(url)
+    lassie = Lassie()
+    data = lassie.fetch(url)
 
-        self.assertEqual(1, len(data['images']))
+    assert len(data['images']) == 1
 
-    def test_list_image_empty(self):
-        url = 'http://lassie.it/amp/list_image_empty.html'
 
-        lassie = Lassie()
-        data = lassie.fetch(url)
+def test_list_image_empty():
+    url = 'http://lassie.it/amp/list_image_empty.html'
 
-        self.assertEqual(1, len(data['images']))
+    lassie = Lassie()
+    data = lassie.fetch(url)
 
-    def test_list_json(self):
-        url = 'http://lassie.it/amp/list_json.html'
+    assert len(data['images']) == 1
 
-        lassie = Lassie()
-        data = lassie.fetch(url)
 
-        self.assertTrue('Pixar' in data['description'])
+def test_list_json():
+    url = 'http://lassie.it/amp/list_json.html'
 
-    def test_video_objects(self):
-        url = 'http://lassie.it/amp/video_objects.html'
+    lassie = Lassie()
+    data = lassie.fetch(url)
 
-        lassie = Lassie()
-        data = lassie.fetch(url)
+    assert 'Pixar' in data['description']
 
-        self.assertEqual(1, len(data['videos']))
 
-    def test_thumbnail_image(self):
-        url = 'http://lassie.it/amp/thumbnail_image.html'
+def test_video_objects():
+    url = 'http://lassie.it/amp/video_objects.html'
 
-        lassie = Lassie()
-        data = lassie.fetch(url)
+    lassie = Lassie()
+    data = lassie.fetch(url)
 
-        self.assertEqual(2, len(data['images']))
+    assert len(data['videos']) == 1
 
-    def test_list_thumbnail_image(self):
-        url = 'http://lassie.it/amp/list_thumbnail_image.html'
 
-        lassie = Lassie()
-        data = lassie.fetch(url)
+def test_thumbnail_image():
+    url = 'http://lassie.it/amp/thumbnail_image.html'
 
-        self.assertEqual(2, len(data['images']))
+    lassie = Lassie()
+    data = lassie.fetch(url)
 
-    def test_str_thumbnail_image(self):
-        url = 'http://lassie.it/amp/str_thumbnail_image.html'
+    assert len(data['images']) == 2
 
-        lassie = Lassie()
-        data = lassie.fetch(url)
 
-        self.assertEqual(2, len(data['images']))
+def test_list_thumbnail_image():
+    url = 'http://lassie.it/amp/list_thumbnail_image.html'
+
+    lassie = Lassie()
+    data = lassie.fetch(url)
+
+    assert len(data['images']) == 2
+
+
+def test_str_thumbnail_image():
+    url = 'http://lassie.it/amp/str_thumbnail_image.html'
+
+    lassie = Lassie()
+    data = lassie.fetch(url)
+
+    assert len(data['images']) == 2
