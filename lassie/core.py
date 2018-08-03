@@ -211,7 +211,8 @@ class Lassie(object):
                 if locale:
                     data['locale'] = locale
 
-            if 'url' not in data:
+            data_url = data.get('url')
+            if not data_url or (data_url in url and len(data_url) < len(url)):
                 data['url'] = url
 
             if ('title' not in data or not data.get('title')) and hasattr(soup.title, 'string'):
