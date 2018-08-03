@@ -394,12 +394,13 @@ class Lassie(object):
                             })
                         elif isinstance(image, list) or isinstance(image, object):
                             if isinstance(image, list):
-                                try:
-                                    image = image[0]
-                                except IndexError:
-                                    pass
+                                image = image[0]
 
-                            image_list = image.get('@list')
+                            try:
+                                image_list = image.get('@list')
+                            except AttributeError:
+                                image_list = [image]
+
                             if image_list:
                                 for _image in image_list:
                                     if isinstance(_image, str):
