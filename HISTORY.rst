@@ -3,6 +3,11 @@
 History
 -------
 
+0.11.7 (2018-08-03)
+++++++++++++++++++
+- Try and return the "best" url. (#75).
+- Fix issue where AMP image data was a list of strings. (#75).
+
 0.11.6 (2018-05-24)
 ++++++++++++++++++
 - Fix issue where AMP images was a list of dictionaries and being identified as an object.
