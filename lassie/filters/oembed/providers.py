@@ -37,7 +37,7 @@ for k, v in PROVIDERS.items():
 
 
 def parse_oembed_data(oembed_data, data):
-    """Parse OEmbed resposne data to inject into lassie's response dict.
+    """Parse OEmbed response data to inject into lassie's response dict.
 
     :param oembed_data: OEmbed response data.
     :type oembed_data: dict
