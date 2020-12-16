@@ -8,11 +8,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-__version__ = '0.11.8'
-
-if sys.argv[-1] == 'publish':
-    os.system('python setup.py sdist upload')
-    sys.exit()
+__version__ = '0.11.9'
 
 packages = [
     'lassie',

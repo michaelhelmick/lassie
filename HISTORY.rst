@@ -3,6 +3,10 @@
 History
 -------
 
+0.11.9 (2020-12-16)
+++++++++++++++++++
+- Upgrade beautifulsoup4 dependency
+
 0.11.8 (2020-12-16)
 ++++++++++++++++++
 - Upgrade requests dependency
