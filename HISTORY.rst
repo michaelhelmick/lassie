@@ -3,6 +3,10 @@
 History
 -------
 
+0.11.8 (2020-12-16)
+++++++++++++++++++
+- Upgrade requests dependency
+
 0.11.7 (2018-08-03)
 ++++++++++++++++++
 - Try and return the "best" url. (#75).
