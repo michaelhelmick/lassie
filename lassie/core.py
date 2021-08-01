@@ -219,6 +219,7 @@ class Lassie(object):
                 data['title'] = soup.title.string
 
         data['status_code'] = status_code
+        data['html'] = html
 
         return data
 
