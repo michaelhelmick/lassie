@@ -3,6 +3,11 @@
 History
 -------
 
+0.11.10 (2020-12-16)
+++++++++++++++++++
+- Add `html` to response dict when available.
+- Upgrade to GitHub Actions
+
 0.11.9 (2020-12-16)
 ++++++++++++++++++
 - Upgrade beautifulsoup4 dependency
