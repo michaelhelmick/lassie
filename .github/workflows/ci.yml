@@ -2,6 +2,9 @@ name: CI
 
 on:
   pull_request:
+  release:
+    types:
+      - published
 
 jobs:
   test:
