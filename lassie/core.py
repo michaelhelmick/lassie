@@ -218,8 +218,9 @@ class Lassie(object):
             if ('title' not in data or not data.get('title')) and hasattr(soup.title, 'string'):
                 data['title'] = soup.title.string
 
+            data['html'] = html
+
         data['status_code'] = status_code
-        data['html'] = html
 
         return data
 
