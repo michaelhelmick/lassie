@@ -8,7 +8,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-__version__ = '0.11.9'
+__version__ = '0.11.10'
 
 packages = [
     'lassie',
@@ -21,12 +21,10 @@ setup(
     version=__version__,
     install_requires=open("requirements.txt").read().split("\n"),
     author='Mike Helmick',
-    author_email='me@michaelhelmick.com',
     license=open('LICENSE').read(),
     url='https://github.com/michaelhelmick/lassie/tree/master',
     keywords='lassie open graph web content scrape scraper',
-    description='Lassie is a Python library for retrieving basic content from websites',
-    long_description=open('README.rst').read() + '\n\n' + open('HISTORY.rst').read(),
+    description='Lassie is a Python library for retrieving content from websites and being returned in a pretty format.',
     include_package_data=True,
     packages=packages,
     classifiers=[
@@ -39,6 +37,6 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.8',
     ]
 )
