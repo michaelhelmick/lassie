@@ -21,12 +21,12 @@ setup(
     version=__version__,
     install_requires=open("requirements.txt").read().split("\n"),
     author='Mike Helmick',
-    author_email='me@michaelhelmick.com',
     license=open('LICENSE').read(),
     url='https://github.com/michaelhelmick/lassie/tree/master',
     keywords='lassie open graph web content scrape scraper',
     description='Lassie is a Python library for retrieving basic content from websites',
     long_description=open('README.rst').read(),
+    long_description_content_type="text/x-rst",
     include_package_data=True,
     packages=packages,
     classifiers=[
