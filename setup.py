@@ -24,9 +24,7 @@ setup(
     license=open('LICENSE').read(),
     url='https://github.com/michaelhelmick/lassie/tree/master',
     keywords='lassie open graph web content scrape scraper',
-    description='Lassie is a Python library for retrieving basic content from websites',
-    long_description=open('README.rst').read(),
-    long_description_content_type="text/x-rst",
+    description='Lassie is a Python library for retrieving content from websites and being returned in a pretty format.',
     include_package_data=True,
     packages=packages,
     classifiers=[
