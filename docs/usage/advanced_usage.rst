@@ -54,7 +54,7 @@ If you decide that you don't want to filter for Open Graph data, instead of decl
     >>> l.fetch('https://github.com/michaelhelmick', open_graph=False)
     >>> l.fetch('https://github.com/ashibble', open_graph=False)
 
-You can use the ``Lassie`` class and set attibutes on the class.
+You can use the ``Lassie`` class and set attributes on the class.
 
 .. code-block:: python
 
@@ -127,7 +127,7 @@ Manipulate the Request (headers, proxies, etc.)
 
 There are times when you may want to turn SSL verification off, send custom headers, or add proxies for the request to go through.
 
-Lassie uses the `requests <http://python-requests.org>`_ library to make web requests. ``requests`` accepts a few parameters to allow developers to manipulate the acutal HTTP request.
+Lassie uses the `requests <http://python-requests.org>`_ library to make web requests. ``requests`` accepts a few parameters to allow developers to manipulate the actual HTTP request.
 
 Here is an example of sending custom headers to a lassie request:
 
